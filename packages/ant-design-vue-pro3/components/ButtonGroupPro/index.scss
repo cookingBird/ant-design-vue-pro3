@@ -1,0 +1,20 @@
+@import '../../style/tool.scss';
+
+.button-group-wrapper {
+  --gutter: 4px;
+  @include style-selector('combine') {
+    > * + * {
+      border-top-left-radius: 0px;
+      border-bottom-left-radius: 0px;
+    }
+    > *:not(:last-child) {
+      border-top-right-radius: 0px;
+      border-bottom-right-radius: 0px;
+    }
+  }
+  @include style-selector('normal') {
+    > * + * {
+      margin-left: var(--gutter);
+    }
+  }
+}

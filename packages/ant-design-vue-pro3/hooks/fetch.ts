@@ -1,83 +1,44 @@
-import { request, type RequestMethodType } from '../tools/Ajax';
-import { ref, type Ref, type ReactiveEffect, unref } from 'vue';
-import type { GenericFunction, Result } from '../types';
-import { type EffectOps, useEffect } from './effect';
+import { ref, type Ref, unref } from 'vue';
+import { useEffect } from './effect';
 
-export interface DataFetch {
-  url: string;
-  method: string;
-  params: Record<string, string>;
-  data: Record<string, string>;
-  fetch: (...args: unknown[]) => Promise<Result<unknown>>;
-  fetchCallback: (...args: unknown[]) => unknown;
-}
-export type FetchResult = {
-  result: Ref<unknown>;
-  run: (p: Record<string, any>, done: GenericFunction) => void;
+export type DataFetch = {
+  fetch: (model: any) => Promise<unknown>;
 };
 
 export function useFetch(
-  model: Ref<any> | ReactiveEffect<any>,
-  options: Partial<DataFetch & EffectOps>,
-  callbacks?: Record<'startCb' | 'successCb' | 'errorCb' | 'finallyCb', GenericFunction>,
-): FetchResult {
-  const { url, method, fetch, params, effectKeys } = options;
-  const { startCb, successCb, errorCb, finallyCb } = callbacks || {};
-  const result = ref<unknown>(null);
-
-  const fetchData = () =>
-    getData(unref(model), unref(buildUrl(url, model)), unref(buildParams(model, params)));
-
-  if (options.effectKeys) {
-    const { onEffect } = useEffect(model, options as EffectOps);
-    onEffect(fetchData);
-    onEffect(() => options?.onEffect?.(model));
+  fetch: (model?: {}) => Promise<unknown>,
+  model?: Ref,
+  effectKeys?: string[],
+) {
+  const result = ref<any[]>([]);
+  const loading = ref(false);
+  const fetchData = () => getData(unref(model));
+  if (effectKeys?.length && model) {
+    useEffect(model, {
+      effectKeys,
+      immediate: true,
+      debounce: 300,
+      onEffect: () => {
+        console.log('onEffect');
+        fetchData();
+      },
+    });
+  } else {
+    fetchData();
   }
-  async function getData(
-    model: any,
-    params: Record<string, any>,
-    paras?: Record<string, any>,
-    done?: GenericFunction,
-  ) {
+  async function getData(model: any) {
     try {
-      if (unref(url)) {
-        const requestOps = {
-          url: unref(url) as string,
-          method: unref((method || 'get') as RequestMethodType),
-          params: Object.assign({}, params, paras),
-          data: Object.assign({}, params, paras),
-        };
-        startCb?.(requestOps);
-        const res = await request<any>(requestOps);
-        if (res.code === 200) {
-          result.value = res.data;
-          successCb?.(res.data);
-          done?.(res.data);
-        } else {
-          // 请求失败
-          errorCb?.(res);
-        }
-      } else if (fetch) {
-        const res = await fetch(model, Object.assign({}, params, paras));
-        if (res.code === 200) {
-          console.log('fetch success', res);
-          result.value = res.data;
-          successCb?.(res.data);
-          done?.(res.data);
-        }
-      }
-    } catch (error) {
-      console.error('table pro fetch data error', error);
+      loading.value = true;
+      // @ts-expect-error
+      result.value = await fetch(model);
     } finally {
-      finallyCb?.(result.value);
+      loading.value = false;
     }
   }
 
   return {
     result,
-    run(p: Record<string, any>, done: GenericFunction) {
-      getData(unref(model), unref(buildParams(model, params)), p, done);
-    },
+    loading,
   };
 }
 
@@ -94,7 +55,7 @@ export function buildParams(
 }
 
 export function buildUrl(url: string | undefined, model: Record<string, any>) {
-  if (url === void 0) return {};
+  if (url === undefined) return undefined;
   const regexps = [/{(.*?)}/g, /\[(.*?)\]/g];
   const m = unref(model);
   return regexps.reduce((acc, regexp) => {

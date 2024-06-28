@@ -1,0 +1,13 @@
+import { type TableProps } from 'ant-design-vue';
+
+export type TablePro = TableProps & {
+  columns: TableProps['columns'] &
+    Partial<{
+      slotIs: string;
+      slotProps: string;
+      wrapperProps: Record<string, any>;
+    }>;
+  dataSource: TableProps['dataSource'];
+  autoFitHeight?: boolean;
+  styled?: 'default' | 'transparent';
+};

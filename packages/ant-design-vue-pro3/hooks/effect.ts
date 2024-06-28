@@ -1,19 +1,8 @@
 import { useArrayValueGetter } from './value';
-import {
-  computed,
-  watch,
-  onUnmounted,
-  ref,
-  type Ref,
-  type ReactiveEffect,
-  watchEffect,
-  nextTick,
-  unref,
-} from 'vue';
+import { onUnmounted, type Ref, unref } from 'vue';
 import { watchDebounced } from '@vueuse/core';
-import { type NOOP } from '../types/tool';
-import { toArray } from '@/tools/misc';
-import { debounce } from '../../../tools/misc/index';
+import type { NOOP } from '../types/tool';
+import { toArray } from '../tools/tool';
 
 export type EffectOps = {
   effectKeys: string[] | string;
@@ -22,48 +11,32 @@ export type EffectOps = {
   debounce?: number;
 };
 
-export function useEffect(model: ReactiveEffect<any> | Ref<any>, options: EffectOps) {
-  const effectCbs = new Set<Function>();
-  const { effectKeys } = options;
-  // const _reactive = (Array.isArray(effectKeys) ? effectKeys : [effectKeys])
-  // 	.map(k => () => getEffectFingerprint(model, k));
+export function useEffect(model: Ref<any>, options: EffectOps) {
+  let effectCb: (() => void) | undefined = options.onEffect;
+  const { effectKeys, immediate, debounce } = options;
   const stop = watchDebounced(
-    () => getEffectFingerprint(model, effectKeys),
+    toArray<string>(effectKeys).map(
+      (key) => () => useArrayValueGetter(key.split('.')).valueGetter(unref(model)),
+    ),
     () => {
-      effectCbs.forEach((cb) => cb());
+      effectCb?.();
     },
     {
-      debounce: options.debounce || 300,
-      immediate: options.immediate,
+      debounce: debounce ?? 300,
+      immediate,
     },
   );
   // 卸载时停止监听
   onUnmounted(() => {
     stop?.();
-    effectCbs.clear();
+    effectCb = undefined;
   });
   return {
-    onEffect(cb: Function) {
-      effectCbs.add(cb);
-      return () => effectCbs.delete(cb);
+    onEffect(cb: () => void) {
+      effectCb = cb;
     },
-    offEffect(cb: Function) {
-      return effectCbs.delete(cb);
+    offEffect() {
+      effectCb = undefined;
     },
   };
-}
-
-function getEffectFingerprint(
-  model: Ref<any> | ReactiveEffect<any>,
-  effectKey: undefined | string | string[],
-): string {
-  if (effectKey === void 0) return '';
-  if (Array.isArray(effectKey) || typeof effectKey === 'string') {
-    const { valueGetter } = useArrayValueGetter(
-      Array.isArray(effectKey) ? effectKey : [effectKey],
-    );
-    return valueGetter(unref(model)).map(JSON.stringify).join(';');
-  } else {
-    throw Error('effectKey type error');
-  }
 }

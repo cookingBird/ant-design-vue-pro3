@@ -1,23 +1,31 @@
-import type { FormPropsPro, FormItemPropsPro } from '../../types/form';
 import type { VisibleOps, Events, Proped } from '../../types';
 import type { DataFetch } from '../../hooks/fetch';
 
-import type { SlotFormItem, Slot, SlotProps } from '../TypeNode';
-import type { GetterSetterInterceptor } from '../../hooks/value';
+import type { TypeNodeProp, Slot, SlotProps } from '../TypeNode/index';
 
-export type FormPropOptions<M> = {
-  columns: FromItemProOptions<M>[];
-} & FormPropsPro;
+import type { FormProps, FormItemProps, RowProps, ColProps } from 'ant-design-vue';
 
-export type FromItemProOptions<M> = Partial<VisibleOps> &
-  SlotFormItem &
-  GetterSetterInterceptor &
-  FormItemPropsPro &
-  Partial<Proped<M>>;
+import type { ValueInterceptor } from '../../hooks/value';
 
-export type FormItemWithSlotProps<S extends Slot> = {
-  slotProps?: SlotProps<S>;
-} & Partial<VisibleOps> &
-  SlotFormItem &
-  FormItemPropsPro &
-  Events;
+export type FormItemProOptions = Partial<VisibleOps> &
+  Partial<ValueInterceptor> &
+  TypeNodeProp & {
+    formItemProps: FormItemProps;
+    col?: ColProps;
+    children?: {
+      columns: FormItemProOptions[];
+      row?: RowProps;
+      colon?: FormItemProps['colon'];
+      labelCol?: FormItemProps['labelCol'];
+      labelAlign?: FormItemProps['labelAlign'];
+    };
+  };
+
+export type FormProProps = FormProps & {
+  options: {
+    columns: FormItemProOptions[];
+    row?: RowProps;
+  } & FormProps;
+  model: any;
+  styled?: 'transparent' | 'default';
+};

@@ -50,7 +50,7 @@ export function buildListeners<T extends Partial<Events>>(
         );
 
         // trigger onEventProps
-        if (key !== void 0 && typeof attrs[key] === 'function') {
+        if (key !== undefined && typeof attrs[key] === 'function') {
           attrs[key]?.(e, done, ...args);
         }
       });

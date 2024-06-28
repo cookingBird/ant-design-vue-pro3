@@ -1,144 +1,114 @@
 <template>
   <div
+    v-if="options.slotIs"
     :prop="generalProp"
-    :required="options.required"
+    :required="options.slotProps?.required ?? false"
     wrapper
     v-bind="options.wrapperProps"
   >
-    <Input
+    <input-pro
       v-if="callFunction(options.slotIs, model) === 'input'"
-      :value="beforeGetter ? beforeGetter(valueGetter(model), model) : valueGetter(model)"
       v-bind="options.slotProps"
-      @update:value="
-        (e) => {
-          beforeSetter
-            ? valueSetter(model, beforeSetter(e, model))
-            : valueSetter(model, e);
-        }
-      "
-      v-on="buildListeners($attrs, options, emits, null, model, generalProp)"
+      :beforeValue="options.beforeValue"
+      :afterChange="options.afterChange"
+      :prop="options.name ?? options.prop"
+      :model="model"
     >
-    </Input>
-    <InputNumber
-      v-else-if="callFunction(options.slotIs, model) === 'inputNumber'"
-      :value="beforeGetter ? beforeGetter(valueGetter(model), model) : valueGetter(model)"
+    </input-pro>
+    <radio-group-pro
+      v-else-if="callFunction(options.slotIs, model) === 'radioGroup'"
       v-bind="options.slotProps"
-      @update:value="
-        (e) => {
-          beforeSetter
-            ? valueSetter(model, beforeSetter(e, model))
-            : valueSetter(model, e);
-        }
-      "
-      v-on="buildListeners($attrs, options, emits, null, model, generalProp)"
+      :beforeValue="options.beforeValue"
+      :afterChange="options.afterChange"
+      :prop="options.name ?? options.prop"
+      :model="model"
     >
-    </InputNumber>
-    <Select
+    </radio-group-pro>
+    <textarea-pro
+      v-if="callFunction(options.slotIs, model) === 'textarea'"
+      v-bind="options.slotProps"
+      :beforeValue="options.beforeValue"
+      :afterChange="options.afterChange"
+      :prop="options.name ?? options.prop"
+      :model="model"
+    >
+    </textarea-pro>
+
+    <select-pro
       v-else-if="callFunction(options.slotIs, model) === 'select'"
-      :value="beforeGetter ? beforeGetter(valueGetter(model), model) : valueGetter(model)"
-      :options="fetchOps"
-      v-bind="omit(options.slotProps, 'options', 'fetch', 'on')"
-      @update:value="
-        (e) => {
-          beforeSetter
-            ? valueSetter(model, beforeSetter(e, model))
-            : valueSetter(model, e);
-        }
-      "
-      v-on="buildListeners($attrs, options, emits, null, model, generalProp)"
+      v-bind="options.slotProps"
+      :model="model"
+      :prop="options.name ?? options.prop"
     >
-    </Select>
+    </select-pro>
+    <button-group-pro
+      v-else-if="callFunction(options.slotIs, model) === 'buttonGroup'"
+      v-bind="options.slotProps"
+      :model="model"
+      :prop="options.name ?? options.prop"
+    >
+    </button-group-pro>
+    <date-picker-pro
+      v-else-if="callFunction(options.slotIs, model) === 'datePicker'"
+      v-bind="options.slotProps"
+      :model="model"
+      :prop="options.name ?? options.prop"
+    />
+    <date-range-picker-pro
+      v-else-if="callFunction(options.slotIs, model) === 'dateRangePicker'"
+      v-bind="options.slotProps"
+      :model="model"
+      :prop="options.name ?? options.prop"
+    />
     <Switch
       v-else-if="callFunction(options.slotIs, model) === 'switch'"
-      :value="beforeGetter ? beforeGetter(valueGetter(model), model) : valueGetter(model)"
       :options="options"
       v-bind="options.slotProps"
-      @update:value="
-        (e) => {
-          beforeSetter
-            ? valueSetter(model, beforeSetter(e, model))
-            : valueSetter(model, e);
-        }
-      "
-      v-on="buildListeners($attrs, options, emits, null, model, generalProp)"
+      :value="valueGetter(model)"
+      @update:value="(e) => valueSetter(model, e)"
     >
     </Switch>
-    <RadioGroup
-      v-else-if="callFunction(options.slotIs, model) === 'radioGroup'"
-      :value="beforeGetter ? beforeGetter(valueGetter(model), model) : valueGetter(model)"
+    <InputNumber
+      v-else-if="callFunction(options.slotIs, model) === 'inputNumber'"
+      :value="valueGetter(model)"
       v-bind="options.slotProps"
-      @update:value="
-        (e) => {
-          beforeSetter
-            ? valueSetter(model, beforeSetter(e, model))
-            : valueSetter(model, e);
-        }
-      "
-      v-on="buildListeners($attrs, options, emits, null, model, generalProp)"
+      @update:value="(e) => valueSetter(model, e)"
     >
-    </RadioGroup>
+    </InputNumber>
     <Cascader
       v-else-if="callFunction(options.slotIs, model) === 'cascader'"
-      :value="beforeGetter ? beforeGetter(valueGetter(model), model) : valueGetter(model)"
       v-bind="options.slotProps"
-      @update:value="
-        (e) => {
-          beforeSetter
-            ? valueSetter(model, beforeSetter(e, model))
-            : valueSetter(model, e);
-        }
-      "
-      v-on="buildListeners($attrs, options, emits, null, model, generalProp)"
+      :value="valueGetter(model)"
+      @update:value="(e) => valueSetter(model, e)"
     >
     </Cascader>
-    <button-group
-      v-else-if="callFunction(options.slotIs, model) === 'buttonGroup'"
-      :options="options.slotProps"
-      :model="{ ...model, prop: generalProp }"
-      v-bind="$attrs"
-      v-on="buildListeners($attrs, options, emits, null, model, generalProp)"
-    >
-    </button-group>
   </div>
 </template>
 
 <script setup lang="ts">
-  import {
-    Input,
-    InputNumber,
-    Select,
-    Switch,
-    RadioGroup,
-    Cascader,
-  } from 'ant-design-vue';
-  import type { SlotFormItem, TypeNodeProp } from '.';
+  /* eslint-disable vue/valid-define-emits */
+  import { InputNumber, Switch, Cascader } from 'ant-design-vue';
+  import type { TypeNodeProp } from '.';
   import { useValue } from '../../hooks/value';
   import { computed } from 'vue';
-  import ButtonGroup from '../ButtonGroupPro/index.vue';
-  import { callFunction, omit } from '../../tools/tool';
-  import { buildListeners } from '../../tools/event';
-  import { useFetch } from '../../hooks/fetch';
+  import ButtonGroupPro from '../ButtonGroupPro/index.vue';
+  import DatePickerPro from '../DatePickerPro/index.vue';
+  import DateRangePickerPro from '../DateRangePickerPro/index.vue';
+  import { callFunction } from '../../tools/tool';
   defineOptions({
     name: 'TypeNode',
   });
 
   const props = defineProps<{
-    options: TypeNodeProp;
+    options: TypeNodeProp<any>;
     model: any;
   }>();
 
-  const emits = defineEmits([]);
+  const emits = defineEmits();
   const { valueGetter, valueSetter } = useValue(props.options.name || props.options.prop);
-  const beforeGetter = computed(() => props.options.beforeGetter);
-  const beforeSetter = computed(() => props.options.beforeSetter);
   const generalProp = computed(() => _buildPropTag(props.options));
 
-  const { result } = useFetch(props.model, props.options);
-  const fetchOps = computed(
-    () => callFunction(props.options.slotProps?.options, props.model) || result,
-  );
-
-  function _buildPropTag(options: SlotFormItem) {
+  function _buildPropTag(options: TypeNodeProp<any>) {
     const p = options.name || options.prop;
     let propTag;
     if (Array.isArray(p)) {
@@ -146,8 +116,13 @@
     } else if (typeof p === 'string') {
       propTag = p;
     } else {
-      throw Error('prop[name] type error');
+      console.warn('TypeNode _buildPropTag fn name|prop is empty');
+      propTag = '';
     }
     return propTag;
   }
 </script>
+
+<style lang="scss">
+  @import './index.scss';
+</style>

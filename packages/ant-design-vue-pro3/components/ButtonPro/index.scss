@@ -1,0 +1,19 @@
+@import '../../style/tool.scss';
+
+.button-pro.ant-btn {
+  @include active-selector('true') {
+    color: var(--ant-primary-color-hover);
+    border-color: var(--ant-primary-color-hover);
+  }
+}
+.button-pro.ant-btn.ant-btn-primary {
+  @include active-selector('true') {
+    color: #eee;
+    border-color: var(--ant-primary-color-hover);
+    background-color: var(--ant-primary-color-hover);
+  }
+}
+
+.button-pro.ant-btn.ant-btn-link {
+  padding: 4px 4px;
+}

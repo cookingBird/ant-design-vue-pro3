@@ -1,0 +1,48 @@
+@mixin size-sequence($sizes) {
+  @each $size in $sizes {
+    #{if(&,"&[data-size="#{$size}"]","[data-size="#{$size}"]")} {
+      @content ($size);
+    }
+  }
+}
+@mixin size-selector($size, $selector: '') {
+  #{if(&, "&[data-size='#{$size}'] #{$selector}", "[data-size='#{$size}'] #{$selector}")} {
+    @content;
+  }
+}
+@mixin type-selector($type, $selector: '') {
+  #{if(&, "&[data-type='#{$type}'] #{$selector}", "[data-type='#{$type}'] #{$selector}")} {
+    @content;
+  }
+}
+@mixin style-selector($style, $selector: '') {
+  #{if(&, "&[data-style='#{$style}'] #{$selector}", "[data-style='#{$style}'] #{$selector}")} {
+    @content;
+  }
+}
+@mixin active-selector($active, $selector: '') {
+  #{if(&, "&[data-active='#{$active}'] #{$selector}", "[data-active='#{$active}'] #{$selector}")} {
+    @content;
+  }
+}
+
+@mixin size-of-font-size($greater: 1.25rem, $s: $size) {
+  $base: 1rem;
+  $index: 0;
+  @each $size in $s {
+    $font-size: $base + ($greater * $index);
+    #{if(&,"&[data-size="#{$size}"]","[data-size="#{$size}"]")} {
+      font-size: $font-size;
+      line-height: $font-size * $line-height-factor;
+    }
+    $index: $index + 1;
+  }
+}
+
+@mixin themes($themes) {
+  @each $theme in $themes {
+    #{if(&,"&[data-theme="#{$theme}"]","::root[data-theme="#{$theme}"]")} {
+      @content ($theme);
+    }
+  }
+}

@@ -1,94 +1,43 @@
 <template>
-  <AntSpace v-bind="omit(options, 'buttons')">
-    <template v-for="btn in buttons">
-      <AntButton
-        v-if="(btn.typeIs === 'button' || btn.typeIs === void 0)
-				&& callValue(btn.if, (cb:any) => cb(model))"
-        v-show="callValue(btn.show, (cb:any) => cb(model))"
-        v-bind="omit(btn, 'on', 'event')"
-        v-on="buildListeners($attrs, btn, emits, buttonsLoading[btn.code], model)"
+  <div class="button-group-wrapper" :data-style="props.styled">
+    <template v-for="btn in buttons" :key="btn.label">
+      <button-pro
+        v-if="callValue(btn.if, (cb) => cb(model))"
+        v-show="callValue(btn.show, (cb) => cb(model))"
+        v-bind="omit(btn, 'if', 'show')"
+        :model="props.model"
       >
-        {{ btn.label }}
-      </AntButton>
-      <AntDropdownButton
-        v-else-if="btn.typeIs === 'dropdown' && callValue(btn.if, (cb:any) => cb(model))"
-        v-show="callValue(btn.show, (cb:any) => cb(model))"
-        v-model:value="btn.value"
-        v-bind="omit(btn, 'on', 'event', 'menuProps')"
-        v-on="btn.on"
-      >
-        {{ btn.label }}
-        <template #overlay>
-          <AntMenu v-bind="btn.menuProps" v-on="btn.menuProps?.on">
-            <AntMenuItem
-              v-for="(item, index) in btn.menuProps?.options"
-              :key="index"
-              v-bind="omit(item, 'on', 'event')"
-              v-on="item?.on"
-            >
-              {{ item.title || item.label }}
-            </AntMenuItem>
-          </AntMenu>
+        <template #default>
+          <slot :name="btn.code ?? btn.label" :options="btn" :model="model">
+            {{ btn.label }}
+          </slot>
         </template>
-      </AntDropdownButton>
-      <AntRadioGroup
-        v-else-if="btn.typeIs === 'radioButtonGroup'
-				&& callValue(btn.if, (cb:any) => cb(model))"
-        v-show="callValue(btn.show, (cb:any) => cb(model))"
-        v-model:value="btn.value"
-        v-bind="omit(btn, 'on', 'event')"
-        v-on="btn.on"
-      >
-        <template v-for="radio in btn.options">
-          <a-radio-button :value="radio.code">
-            {{ radio.label }}
-          </a-radio-button>
-        </template>
-      </AntRadioGroup>
+      </button-pro>
     </template>
-  </AntSpace>
+  </div>
 </template>
 <script setup lang="ts">
-  import { useLoading } from './hook';
-  import { computed } from 'vue';
-  import { buildListeners } from '../../tools/event';
   import { omit } from '../../tools/tool';
   import { callValue } from '../../tools/visible';
-  import type { MyButtonGroup } from '.';
-  import {
-    Space as AntSpace,
-    Button as AntButton,
-    DropdownButton as AntDropdownButton,
-    RadioGroup as AntRadioGroup,
-    Menu as AntMenu,
-    MenuItem as AntMenuItem,
-  } from 'ant-design-vue';
+  import type { ButtonGroupPro } from '.';
+  import ButtonPro from '../ButtonPro/index.vue';
   defineOptions({
-    name: 'AButtonGroupPro',
+    name: 'ButtonGroupPro',
   });
-  const props = withDefaults(
-    defineProps<{
-      options: MyButtonGroup;
-      model: any;
-    }>(),
-    {},
-  );
-  const emits = defineEmits();
-
-  const buttonsLoading = useLoading(
-    props.options?.buttons?.filter((b) => b.typeIs === 'button' || b.typeIs === void 0) ||
-      [],
-  );
+  const props = withDefaults(defineProps<ButtonGroupPro>(), {
+    model: null,
+    styled: 'normal',
+  });
   const buttons = computed(() =>
-    props.options?.buttons?.map((item) => {
-      return {
-        ...item,
-        loading: buttonsLoading[item.code]?.value,
-      };
-    }),
+    props.buttons.map((item, index) => ({
+      ...item,
+      onClick(done: () => void, model: any) {
+        item.onClick?.(done, model);
+      },
+    })),
   );
 </script>
 
-<style scoped>
-  @import './index.css';
+<style>
+  @import './index.scss';
 </style>

@@ -1,12 +1,12 @@
-import { toRaw, unref } from 'vue';
+import { unref } from 'vue';
 export * from './validator';
 
 export function omit<T, K extends keyof T>(tar: T, ...keys: K[][] | K[]): Omit<T, K> {
   const obj = {};
   const keysFlat = keys.flat() as (keyof T)[];
-  for (let key in tar) {
+  for (const key in tar) {
     if (!keysFlat.includes(key)) {
-      //@ts-expect-error
+      // @ts-expect-error
       obj[key] = tar[key];
     }
   }
@@ -16,9 +16,9 @@ export function omit<T, K extends keyof T>(tar: T, ...keys: K[][] | K[]): Omit<T
 export function pick<T, K extends keyof T>(tar: T, ...keys: K[][] | K[]): Pick<T, K> {
   const obj = {};
   const keysFlat = keys.flat() as (keyof T)[];
-  for (let key in tar) {
+  for (const key in tar) {
     if (keysFlat.includes(key)) {
-      //@ts-expect-error
+      // @ts-expect-error
       obj[key] = tar[key];
     }
   }
@@ -31,4 +31,8 @@ export function callFunction(val: unknown, ...args: unknown[]) {
   } else {
     return val;
   }
+}
+
+export function toArray<T>(val: T | T[]) {
+  return Array.isArray(val) ? val : [val];
 }

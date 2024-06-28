@@ -1,11 +1,15 @@
 import type { App, Component } from 'vue';
-import AFormPro from './components/FormPro/index.vue';
-import AButtonGroup from './components/ButtonGroupPro/index.vue';
-import ATablePro from './components/TablePro/index.vue';
+import FormPro from './components/FormPro/index.vue';
+import ButtonGroupPro from './components/ButtonGroupPro/index.vue';
+import TablePro from './components/TablePro/index.vue';
+import GridLayout from './components/GridLayout/index.vue';
+export * from './components/GridLayout/index.vue';
 
-const components = [AFormPro, AButtonGroup, ATablePro] as (Component & {
+const components = [FormPro, ButtonGroupPro, TablePro, GridLayout] as (Component & {
   name: string;
 })[];
+
+export { FormPro, ButtonGroupPro, TablePro, GridLayout };
 
 export default {
   install: function (app: App) {

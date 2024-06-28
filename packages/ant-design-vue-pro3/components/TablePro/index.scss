@@ -1,0 +1,78 @@
+@use 'sass:color';
+@import '../../style/tool.scss';
+
+.table-pro-wrapper {
+  --header-color: #eee;
+  --cell-color: #888;
+  --header-bg: rgba(18, 83, 133, 0.82);
+  @include style-selector('transparent') {
+    .ant-table {
+      background-color: transparent;
+      color: #555;
+    }
+    .ant-table-sticky-holder {
+      background-color: var(--header-bg);
+    }
+    .ant-table-header {
+      background-color: var(--header-bg);
+    }
+    .ant-table-thead .ant-table-cell {
+      border-bottom: 0px;
+      color: var(--header-color);
+      font-size: medium;
+      padding: 12px 12px;
+    }
+    .ant-table-row:hover .ant-table-cell {
+      background-color: rgba(18, 83, 133, 0.6);
+    }
+    .ant-table-cell {
+      background-color: transparent;
+      color: var(--cell-color);
+      border-bottom: 0px;
+    }
+    .ant-table-placeholder > .ant-table-cell {
+      &:hover {
+        background-color: transparent;
+      }
+      background-color: transparent;
+      border-bottom: 0px;
+      color: #555;
+    }
+
+    .ant-table-cell-scrollbar {
+      box-shadow: none;
+    }
+    .ant-table-body {
+      /* 滚动条整体部分 */
+      &::-webkit-scrollbar {
+        width: 10px; /* 滚动条的宽度 */
+        height: 10px; /* 滚动条的高度，用于水平滚动条 */
+        background: transparent;
+        border: 1px solid #555;
+        border-radius: 6px; /* 圆角 */
+      }
+
+      /* 滚动条轨道 */
+      &::-webkit-scrollbar-track {
+        background: transparent; /* 滚动条轨道的背景色 */
+      }
+
+      /* 滚动条滑块 */
+      &::-webkit-scrollbar-thumb {
+        background: hsl(0, 0%, 53%); /* 滑块的颜色 */
+        border-radius: 6px; /* 滑块的圆角 */
+        cursor: pointer;
+      }
+
+      /* 滑块在悬停时的颜色 */
+      &::-webkit-scrollbar-thumb:hover {
+        background: #555; /* 滑块悬停时的颜色 */
+      }
+
+      /* 可选：当滚动条不活动时 */
+      &::-webkit-scrollbar-thumb:window-inactive {
+        background: #ccc; /* 滑块在不活动窗口中的颜色 */
+      }
+    }
+  }
+}

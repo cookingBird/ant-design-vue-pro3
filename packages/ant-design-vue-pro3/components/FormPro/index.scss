@@ -1,0 +1,11 @@
+@import '../../style/tool';
+.form-pro {
+  @include style-selector('transparent') {
+    .ant-input-affix-wrapper {
+      background-color: transparent;
+    }
+    input {
+      background-color: transparent;
+    }
+  }
+}

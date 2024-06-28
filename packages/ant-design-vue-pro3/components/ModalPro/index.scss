@@ -1,0 +1,26 @@
+@import '../../style/tool.scss';
+.modal-pro {
+  .ant-modal-header {
+    .ant-modal-title {
+      font-size: large;
+      font-weight: bold;
+    }
+  }
+  .ant-modal-close .ant-modal-close-x {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  &.modal-pro--transparent {
+    .ant-modal-content {
+      background-color: transparent;
+    }
+    .ant-modal-body {
+      background-color: transparent;
+    }
+    .ant-modal-footer {
+      background-color: transparent;
+      border-top-color: transparent;
+    }
+  }
+}

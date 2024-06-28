@@ -1,17 +1,46 @@
 <template>
-  <a-button v-bind="$attrs" :loading="loading" @click="handleClick">
-    <slot></slot>
-  </a-button>
+  <Button
+    v-bind="omitProps"
+    :loading="loading"
+    :onClick="clickHandler"
+    :data-active="props.active"
+    class="button-pro"
+  >
+    <a-popconfirm v-if="props.confirm" v-bind="props.confirm">
+      <slot> {{ label }} </slot>
+    </a-popconfirm>
+    <slot v-else> {{ label }} </slot>
+  </Button>
 </template>
 
 <script setup lang="ts">
-  import { Button as AButton } from 'ant-design-vue';
-  const loading = ref(false);
-  const emit = defineEmits<{
-    click: [done: () => void];
-  }>();
-  function handleClick() {
+  import { Button } from 'ant-design-vue';
+  import useLoading from '../../hooks/loading';
+  import type { ButtonPro } from '.';
+  import { omit } from '../../tools/tool';
+  const { loading, done } = useLoading();
+
+  defineOptions({
+    name: 'ButtonPro',
+    inheritAttrs: false,
+  });
+
+  const props = withDefaults(defineProps<ButtonPro>(), {
+    model: null,
+    active: false,
+  });
+  console.log('button props', props);
+
+  // omit passive onClick event
+  const omitProps = computed(() =>
+    omit(props, ['onClick', 'model', 'confirm', 'prefix']),
+  );
+  function clickHandler() {
     loading.value = true;
-    emit('click', () => (loading.value = false));
+    props.onClick?.(done, props.model);
   }
 </script>
+
+<style>
+  @import './index.scss';
+</style>

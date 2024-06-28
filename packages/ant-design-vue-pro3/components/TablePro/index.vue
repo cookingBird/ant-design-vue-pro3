@@ -1,55 +1,95 @@
 <template>
-  <AntTable ref="tableRef" v-bind="attrs">
-    <template #bodyCell="{ column, record }">
-      <type-node
-        v-if="column.dataIndex !== void 0 && slotsColNames.includes(column.dataIndex)"
-        :model="record"
-        :options="{
-          ...column,
-          name: column.dataIndex,
-        }"
-      >
-      </type-node>
-    </template>
-  </AntTable>
+  <div
+    ref="tableRefWrapper"
+    class="table-pro-wrapper"
+    :class="$attrs.class"
+    :data-style="styled"
+    :style="$attrs.style as string"
+  >
+    <ant-table ref="tableRef" v-bind="props" :columns="withDefaultCols" :scroll="scroll">
+      <template #bodyCell="{ column, record, index }">
+        <slot
+          :name="column.dataIndex"
+          :column="column"
+          :index="index"
+          :record="record"
+          :row="record"
+        >
+          <type-node-vue
+            v-if="column.dataIndex !== undefined && column.slotIs"
+            :model="record"
+            :options="{
+              slotIs: column.slotIs,
+              slotProps: column.slotProps,
+              prop: column.prop ?? column.dataIndex,
+              wrapperProps: column.wrapperProps,
+            }"
+          ></type-node-vue>
+          <template v-else>
+            {{ record[column.dataIndex] }}
+          </template>
+        </slot>
+      </template>
+    </ant-table>
+  </div>
 </template>
 
-<script lang="ts">
-  import { defineComponent, computed } from 'vue';
-  import type { TablePropsPro } from '../../types/table';
+<script lang="ts" setup>
   import TypeNodeVue from '../TypeNode/index.vue';
-  import type { TypeNodeProp } from '../TypeNode';
+  import type { TablePro } from '.';
+  import { useResizeObserver } from '@vueuse/core';
   import { Table as AntTable } from 'ant-design-vue';
-  export default defineComponent({
-    name: 'ATablePro',
-    components: {
-      TypeNode: TypeNodeVue,
-    },
+  defineOptions({
+    name: 'TablePro',
     inheritAttrs: false,
-    setup(props, { slots, attrs, expose, emit }) {
-      const { columns } = attrs as unknown as TablePropsPro<any, TypeNodeProp>;
-      function getCols(col: any) {
-        let result = [];
-        if (col.slotIs && col.dataIndex) {
-          result.push(col);
+  });
+
+  const props = withDefaults(defineProps<TablePro>(), {
+    bordered: true,
+    sticky: true,
+    showHeader: true,
+    autoFitHeight: true,
+    styled: 'default',
+  });
+
+  const tableRefWrapper = ref<HTMLDivElement | null>(null);
+  const scroll = ref<{
+    scrollToFirstRowOnChange?: boolean;
+    x?: number;
+    y?: number;
+  }>({});
+  onMounted(() => {
+    props.autoFitHeight &&
+      useResizeObserver(tableRefWrapper, (entries) => {
+        if (entries[0]) {
+          const {
+            contentRect: { height },
+          } = entries[0];
+          const { height: headerHeight = 53 } =
+            tableRefWrapper.value
+              ?.querySelector('.ant-table-header')
+              ?.getBoundingClientRect() || {};
+
+          scroll.value.y = Math.floor(height - headerHeight);
         }
-        if (col.children?.length > 0) {
-          const cols = col.children.map((c: any) => getCols(c));
-          result = result.concat(cols.flat());
-        }
-        return result;
-      }
-      const slotsCols = computed(() => columns.map((c) => getCols(c)).flat());
-      const slotsColNames = computed(() => slotsCols.value.map((col) => col.dataIndex));
-      return {
-        attrs,
-        slotsCols,
-        slotsColNames,
-      };
-    },
+      });
+  });
+
+  const withDefaultCols = computed(
+    () =>
+      props.columns?.map((col) => ({
+        ...col,
+        align: col.align ?? 'center',
+      })) || [],
+  );
+
+  const tableRef = ref<typeof AntTable | null>(null);
+
+  defineExpose({
+    tableRef,
   });
 </script>
 
 <style lang="css">
-  @import './index.css';
+  @import './index.scss';
 </style>

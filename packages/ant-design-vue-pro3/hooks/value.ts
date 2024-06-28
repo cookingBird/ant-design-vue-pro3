@@ -1,44 +1,43 @@
+/* eslint-disable vue/no-ref-as-operand,indent */
 import { isRef, type Ref, reactive, ref } from 'vue';
 
-export type GetterSetterInterceptor = {
-  beforeGetter?: (value: any, model: any) => any;
-  beforeSetter?: (value: any, model: any) => any;
+export type ValueInterceptor = {
+  afterChange: (value: unknown) => unknown;
+  beforeValue: (value: unknown) => unknown;
 };
 
 export function useValue(
   prop?: string | number | (string | number)[],
-  fallbackValue: any = '',
+  fallbackValue: any = undefined,
 ) {
   const props = Array.isArray(prop)
     ? prop
     : typeof prop === 'string'
     ? prop?.split('.')
-    : prop !== void 0
+    : prop !== undefined
     ? [prop]
-    : void 0;
+    : undefined;
   return {
     valueGetter(model: any): any {
-      if (model === void 0 || model === null) {
-        throw Error('value getter model context is null ro undefined');
+      if (model === undefined || model === null) {
+        return console.warn('valueGetter no model');
       }
-      if (!props) {
-        return model;
-      }
+      if (!props) return console.warn('valueGetter no props');
       let val = model;
       props.forEach((key, index) => {
         if (index < props.length - 1) {
           val =
-            val[key] === void 0 || val[key] === null
+            val[key] === undefined || val[key] === null
               ? isRef(val)
-                ? //@ts-expect-error
+                ? // @ts-expect-error
                   (val.value[key] = reactive({}))
                 : (val[key] = reactive({}))
               : val[key];
         } else {
           val =
-            val[key] === void 0 || val[key] === null
+            val[key] === undefined || val[key] === null
               ? isRef(val)
-                ? //@ts-expect-error
+                ? // @ts-expect-error
                   (val.value[key] = fallbackValue)
                 : (val[key] = fallbackValue)
               : val[key];
@@ -49,39 +48,32 @@ export function useValue(
     },
     valueSetter(model: Ref | ReturnType<typeof reactive>, value: any): void {
       if (!props) {
-        if (isRef(model)) {
-          model.value = value;
-        } else {
-          model = ref(value);
-        }
-      } else {
-        let context = model;
-        const length = props.length;
-        props.forEach((key, index) => {
-          if (index < length - 1) {
-            isRef(context)
-              ? //@ts-expect-error
-                (context = context.value[key])
-              : //@ts-expect-error
-                (context = context[key]);
-          } else {
-            isRef(context)
-              ? //@ts-expect-error
-                (context.value[key] = value)
-              : //@ts-expect-error
-                (context[key] = value);
-          }
-        });
+        return console.warn('valueSetter no props');
       }
+      let context = model;
+      const length = props.length;
+      props.forEach((key, index) => {
+        if (index < length - 1) {
+          isRef(context)
+            ? (context = context.value[key])
+            : // @ts-expect-error
+              (context = context[key]);
+        } else {
+          isRef(context)
+            ? (context.value[key] = value)
+            : // @ts-expect-error
+              (context[key] = value);
+        }
+      });
     },
   };
 }
 
-export function useArrayValueGetter(props: string[], fallbackValue: any = null): any {
+export function useArrayValueGetter(props: string[], fallbackValue: any = null) {
   const propsGetter = props.map((p) => useValue(p, fallbackValue).valueGetter);
   return {
     valueGetter(model: any): any {
-      return propsGetter.map((valueGetter) => valueGetter(model));
+      return propsGetter.map((getter) => getter(model));
     },
   };
 }

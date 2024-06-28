@@ -1,12 +1,9 @@
-export function callValue(
-  i: boolean | Function | undefined,
-  cb: Function,
-  fallback: boolean = true,
-) {
-  if (i === void 0) {
+import type { NOOP } from '../types/tool';
+export function callValue(i: unknown, cb: NOOP, fallback: boolean = true) {
+  if (i === undefined) {
     return fallback;
   } else if (typeof i === 'function') {
-    cb(i);
+    return cb(i);
   } else {
     return i;
   }

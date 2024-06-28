@@ -1,3 +1,14 @@
+export type RequestMethodType = 'get' | 'post' | 'GET' | 'POST';
+
+export type RequestOptions = {
+  method?: RequestMethodType;
+  url: string;
+  headers?: Object;
+  withCredentials?: boolean;
+  params?: object;
+  data?: object;
+};
+
 export function request<R>(option: RequestOptions): Promise<R> {
   if (typeof XMLHttpRequest === 'undefined') {
     return Promise.reject(Error('not support XMLHttpRequest'));
@@ -27,7 +38,11 @@ export function request<R>(option: RequestOptions): Promise<R> {
   const headers = option.headers || {};
 
   for (const [key, value] of Object.entries(headers)) {
-    if (headers.hasOwnProperty(key) && value !== null && value !== void 0) {
+    if (
+      Object.prototype.hasOwnProperty.call(headers, key) &&
+      value !== null &&
+      value !== undefined
+    ) {
       xhr.setRequestHeader(key, value);
     }
   }
@@ -90,14 +105,3 @@ function getBody(xhr: XMLHttpRequest) {
     return text;
   }
 }
-
-export type RequestOptions = {
-  method?: RequestMethodType;
-  url: string;
-  headers?: Object;
-  withCredentials?: boolean;
-  params?: object;
-  data?: object;
-};
-
-export type RequestMethodType = 'get' | 'post' | 'GET' | 'POST';
