@@ -1,4 +1,4 @@
-import { ref, type Ref, unref } from 'vue';
+import { ref, type MaybeRef, unref } from 'vue';
 import { useEffect } from './effect';
 
 export type DataFetch = {
@@ -7,7 +7,7 @@ export type DataFetch = {
 
 export function useFetch(
   fetch: (model?: {}) => Promise<unknown>,
-  model?: Ref,
+  model?: MaybeRef,
   effectKeys?: string[],
 ) {
   const result = ref<any[]>([]);
@@ -19,13 +19,17 @@ export function useFetch(
       immediate: true,
       debounce: 300,
       onEffect: () => {
-        console.log('onEffect');
         fetchData();
       },
     });
   } else {
     fetchData();
   }
+
+  return {
+    result,
+    loading,
+  };
   async function getData(model: any) {
     try {
       loading.value = true;
@@ -35,11 +39,6 @@ export function useFetch(
       loading.value = false;
     }
   }
-
-  return {
-    result,
-    loading,
-  };
 }
 
 export function buildParams(

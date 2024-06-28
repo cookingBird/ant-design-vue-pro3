@@ -9,8 +9,6 @@
     <input-pro
       v-if="callFunction(options.slotIs, model) === 'input'"
       v-bind="options.slotProps"
-      :beforeValue="options.beforeValue"
-      :afterChange="options.afterChange"
       :prop="options.name ?? options.prop"
       :model="model"
     >
@@ -18,8 +16,6 @@
     <radio-group-pro
       v-else-if="callFunction(options.slotIs, model) === 'radioGroup'"
       v-bind="options.slotProps"
-      :beforeValue="options.beforeValue"
-      :afterChange="options.afterChange"
       :prop="options.name ?? options.prop"
       :model="model"
     >
@@ -27,8 +23,6 @@
     <textarea-pro
       v-if="callFunction(options.slotIs, model) === 'textarea'"
       v-bind="options.slotProps"
-      :beforeValue="options.beforeValue"
-      :afterChange="options.afterChange"
       :prop="options.name ?? options.prop"
       :model="model"
     >
@@ -56,6 +50,12 @@
     />
     <date-range-picker-pro
       v-else-if="callFunction(options.slotIs, model) === 'dateRangePicker'"
+      v-bind="options.slotProps"
+      :model="model"
+      :prop="options.name ?? options.prop"
+    />
+    <transfer-pro
+      v-else-if="callFunction(options.slotIs, model) === 'transfer'"
       v-bind="options.slotProps"
       :model="model"
       :prop="options.name ?? options.prop"
@@ -95,12 +95,13 @@
   import DatePickerPro from '../DatePickerPro/index.vue';
   import DateRangePickerPro from '../DateRangePickerPro/index.vue';
   import { callFunction } from '../../tools/tool';
+  import TransferPro from '../TransferPro/index.vue';
   defineOptions({
     name: 'TypeNode',
   });
 
   const props = defineProps<{
-    options: TypeNodeProp<any>;
+    options: TypeNodeProp;
     model: any;
   }>();
 
@@ -108,7 +109,7 @@
   const { valueGetter, valueSetter } = useValue(props.options.name || props.options.prop);
   const generalProp = computed(() => _buildPropTag(props.options));
 
-  function _buildPropTag(options: TypeNodeProp<any>) {
+  function _buildPropTag(options: TypeNodeProp) {
     const p = options.name || options.prop;
     let propTag;
     if (Array.isArray(p)) {

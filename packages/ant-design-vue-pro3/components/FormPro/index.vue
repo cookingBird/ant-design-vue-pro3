@@ -68,9 +68,6 @@
   });
   const props = withDefaults(defineProps<FormProProps>(), {
     styled: 'default',
-    labelCol: {
-      style: 'width:90px;',
-    },
     labelAlign: 'right',
     colon: true,
   });

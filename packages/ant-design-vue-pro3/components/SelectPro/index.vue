@@ -29,20 +29,21 @@
   const omitProps = computed(() =>
     omit(props, 'model', 'fetch', 'open', 'onUpdate:value', 'beforeValue', 'afterChange'),
   );
-  const propRefs = toRefs(props);
+  // fetch data
   const fetchOps = ref<SelectOption[]>([]);
   const builtOptions = computed(
     () => callFunction(props.options, props.model) ?? fetchOps.value,
   );
   const innerLoading = ref(false);
   if (props.fetch) {
-    const { result, loading } = useFetch(props.fetch, propRefs.model, props.effectKeys);
+    const { result, loading } = useFetch(props.fetch, props.model, props.effectKeys);
     watchEffect(() => {
       // console.log('select fetch', result.value);
       fetchOps.value = result.value;
       innerLoading.value = loading.value;
     });
   }
+  // bind model
   const { valueGetter, valueSetter } = useValue(props.prop);
   const value = computed(() =>
     props.beforeValue!(props.value ?? valueGetter(props.model)),

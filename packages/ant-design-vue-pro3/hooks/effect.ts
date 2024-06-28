@@ -1,5 +1,5 @@
 import { useArrayValueGetter } from './value';
-import { onUnmounted, type Ref, unref } from 'vue';
+import { onUnmounted, type MaybeRef, unref } from 'vue';
 import { watchDebounced } from '@vueuse/core';
 import type { NOOP } from '../types/tool';
 import { toArray } from '../tools/tool';
@@ -11,7 +11,7 @@ export type EffectOps = {
   debounce?: number;
 };
 
-export function useEffect(model: Ref<any>, options: EffectOps) {
+export function useEffect(model: MaybeRef<any>, options: EffectOps) {
   let effectCb: (() => void) | undefined = options.onEffect;
   const { effectKeys, immediate, debounce } = options;
   const stop = watchDebounced(

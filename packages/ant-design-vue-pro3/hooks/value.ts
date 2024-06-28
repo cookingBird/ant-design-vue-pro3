@@ -1,5 +1,5 @@
 /* eslint-disable vue/no-ref-as-operand,indent */
-import { isRef, type Ref, reactive, ref } from 'vue';
+import { isRef, type Ref, reactive } from 'vue';
 
 export type ValueInterceptor = {
   afterChange: (value: unknown) => unknown;
