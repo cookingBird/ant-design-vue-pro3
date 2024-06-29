@@ -20,8 +20,5 @@
 </script>
 
 <style>
-  .pagination-pro-wrapper {
-    display: flex;
-    justify-content: flex-end;
-  }
+  @import './index.scss';
 </style>

@@ -36,7 +36,11 @@
   );
   const innerLoading = ref(false);
   if (props.fetch) {
-    const { result, loading } = useFetch(props.fetch, props.model, props.effectKeys);
+    const { result, loading } = useFetch(
+      props.fetch,
+      computed(() => props.model),
+      props.effectKeys,
+    );
     watchEffect(() => {
       // console.log('select fetch', result.value);
       fetchOps.value = result.value;
@@ -45,9 +49,10 @@
   }
   // bind model
   const { valueGetter, valueSetter } = useValue(props.prop);
-  const value = computed(() =>
-    props.beforeValue!(props.value ?? valueGetter(props.model)),
-  );
+  const value = computed(() => {
+    const res = props.beforeValue!(props.value ?? valueGetter(props.model));
+    return res === '' ? undefined : res;
+  });
   const emit = defineEmits<{
     'update:value': [val: any];
   }>();

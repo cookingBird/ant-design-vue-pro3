@@ -5,6 +5,26 @@
   --header-color: #eee;
   --cell-color: #888;
   --header-bg: rgba(18, 83, 133, 0.82);
+  // >>>>>>>>>> auto height scrool
+  &:has(.table-pro--autoHeight) {
+    height: 100%;
+  }
+  .table-pro--autoHeight {
+    height: 100%;
+    .ant-table,
+    .ant-spin-nested-loading,
+    .ant-spin-container,
+    .ant-table-container {
+      height: 100%;
+    }
+    .ant-spin-container {
+      overflow: hidden;
+    }
+    .ant-table-container {
+      overflow-y: auto;
+    }
+  }
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   @include style-selector('transparent') {
     .ant-table {
       background-color: transparent;

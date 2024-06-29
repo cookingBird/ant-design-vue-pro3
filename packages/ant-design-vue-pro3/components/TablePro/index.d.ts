@@ -1,6 +1,6 @@
 import { type TableProps } from 'ant-design-vue';
 
-export type TablePro = TableProps & {
+export type TablePro = Omit<TableProps, 'scroll'> & {
   columns: TableProps['columns'] &
     Partial<{
       slotIs: string;

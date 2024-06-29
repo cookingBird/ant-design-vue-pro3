@@ -73,7 +73,7 @@ export function useArrayValueGetter(props: string[], fallbackValue: any = null) 
   const propsGetter = props.map((p) => useValue(p, fallbackValue).valueGetter);
   return {
     valueGetter(model: any): any {
-      return propsGetter.map((getter) => getter(model));
+      return propsGetter.map((getter) => getter(unref(model)));
     },
   };
 }

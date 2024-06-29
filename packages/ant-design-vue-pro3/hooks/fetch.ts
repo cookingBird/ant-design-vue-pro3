@@ -1,4 +1,4 @@
-import { ref, type MaybeRef, unref } from 'vue';
+import { ref, type Ref, type ComputedRef, unref } from 'vue';
 import { useEffect } from './effect';
 
 export type DataFetch = {
@@ -7,7 +7,7 @@ export type DataFetch = {
 
 export function useFetch(
   fetch: (model?: {}) => Promise<unknown>,
-  model?: MaybeRef,
+  model?: Ref | ComputedRef,
   effectKeys?: string[],
 ) {
   const result = ref<any[]>([]);

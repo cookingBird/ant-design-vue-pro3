@@ -23,21 +23,37 @@
   const props = withDefaults(defineProps<TransferPropsPro>(), {
     beforeValue: (v: any) => v,
     afterChange: (v: any) => v,
-    keyField: 'id',
+    render: (item: any) => item.title,
   });
+  console.log('transfer props', props);
   const omitProps = computed(() =>
-    omit(props, 'model', 'fetch', 'beforeValue', 'afterChange', 'onUpdate:targetKeys'),
+    omit(
+      props,
+      'model',
+      'fetch',
+      'beforeValue',
+      'afterChange',
+      'onUpdate:targetKeys',
+      'effectKeys',
+      'prop',
+    ),
   );
   const fetchDataSource = ref([]);
   if (props.fetch) {
-    const { result } = useFetch(props.fetch, props.model, props.effectKeys);
+    const { result } = useFetch(
+      props.fetch,
+      computed(() => props.model),
+      props.effectKeys,
+    );
     watchEffect(() => {
       // @ts-expect-error
       fetchDataSource.value = result.value;
     });
   }
   const innerDataSource = computed(() => props.dataSource ?? fetchDataSource.value);
-
+  watchEffect(() => {
+    console.log(innerDataSource.value);
+  });
   // bind model
   const { valueGetter, valueSetter } = useValue(props.prop);
   const targetKeys = computed(() =>

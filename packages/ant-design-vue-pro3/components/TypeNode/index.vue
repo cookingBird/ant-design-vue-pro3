@@ -1,11 +1,5 @@
 <template>
-  <div
-    v-if="options.slotIs"
-    :prop="generalProp"
-    :required="options.slotProps?.required ?? false"
-    wrapper
-    v-bind="options.wrapperProps"
-  >
+  <div v-if="options.slotIs" v-bind="options.wrapperProps" :prop="generalProp" wrapper>
     <input-pro
       v-if="callFunction(options.slotIs, model) === 'input'"
       v-bind="options.slotProps"

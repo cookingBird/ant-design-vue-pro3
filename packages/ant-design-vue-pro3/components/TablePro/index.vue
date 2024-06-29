@@ -1,12 +1,12 @@
 <template>
-  <div
-    ref="tableRefWrapper"
-    class="table-pro-wrapper"
-    :class="$attrs.class"
-    :data-style="styled"
-    :style="$attrs.style as string"
-  >
-    <ant-table ref="tableRef" v-bind="props" :columns="withDefaultCols" :scroll="scroll">
+  <div ref="tableRefWrapper" class="table-pro-wrapper" :data-style="styled">
+    <ant-table
+      ref="tableRef"
+      v-bind="props"
+      :class="autoFitHeight ? 'table-pro--autoHeight' : ''"
+      :columns="withDefaultCols"
+      :scroll="scroll"
+    >
       <template #bodyCell="{ column, record, index }">
         <slot
           :name="column.dataIndex"
@@ -37,11 +37,10 @@
 <script lang="ts" setup>
   import TypeNodeVue from '../TypeNode/index.vue';
   import type { TablePro } from '.';
-  import { useResizeObserver } from '@vueuse/core';
   import { Table as AntTable } from 'ant-design-vue';
   defineOptions({
     name: 'TablePro',
-    inheritAttrs: false,
+    inheritAttrs: true,
   });
 
   const props = withDefaults(defineProps<TablePro>(), {
@@ -58,23 +57,6 @@
     x?: number;
     y?: number;
   }>({});
-  onMounted(() => {
-    props.autoFitHeight &&
-      useResizeObserver(tableRefWrapper, (entries) => {
-        if (entries[0]) {
-          const {
-            contentRect: { height },
-          } = entries[0];
-          const { height: headerHeight = 53 } =
-            tableRefWrapper.value
-              ?.querySelector('.ant-table-header')
-              ?.getBoundingClientRect() || {};
-
-          scroll.value.y = Math.floor(height - headerHeight);
-        }
-      });
-  });
-
   const withDefaultCols = computed(
     () =>
       props.columns?.map((col) => ({
