@@ -1,4 +1,3 @@
-import { useArrayValueGetter } from './value';
 import { onUnmounted, unref } from 'vue';
 import type { Ref, ComputedRef } from 'vue';
 import { watchDebounced } from '@vueuse/core';
@@ -17,9 +16,7 @@ export function useEffect(model: Ref | ComputedRef, options: EffectOps) {
   const { effectKeys, immediate, debounce } = options;
   console.log('useEffect', options, model);
   const stop = watchDebounced(
-    toArray<string>(effectKeys).map(
-      (key) => () => useArrayValueGetter(key.split('.')).valueGetter(unref(model)),
-    ),
+    toArray<string>(effectKeys).map((key) => () => unref(model)[key]),
     () => {
       console.log('useEffect');
       effectCb?.();

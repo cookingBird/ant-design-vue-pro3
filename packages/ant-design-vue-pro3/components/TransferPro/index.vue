@@ -3,8 +3,8 @@
     v-bind="omitProps"
     :dataSource="innerDataSource"
     :targetKeys="targetKeys"
-    @update:targetKeys="updateValueHandler"
     class="transfer-pro"
+    @update:targetKeys="updateValueHandler"
   >
     <template v-if="$slots.children" #children="slotProps">
       <slot name="children" v-bind="slotProps"> </slot>

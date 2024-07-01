@@ -24,8 +24,11 @@
     mode: undefined,
     allowClear: true,
     maxTagCount: 'responsive',
+    filterOption: () => (input: string, option: any) => {
+      return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+    },
   });
-  // console.log('select props', props);
+  console.log('select props', props);
   const omitProps = computed(() =>
     omit(props, 'model', 'fetch', 'open', 'onUpdate:value', 'beforeValue', 'afterChange'),
   );
@@ -36,11 +39,7 @@
   );
   const innerLoading = ref(false);
   if (props.fetch) {
-    const { result, loading } = useFetch(
-      props.fetch,
-      computed(() => props.model),
-      props.effectKeys,
-    );
+    const { result, loading } = useFetch(props.fetch, props.model, props.effectKeys);
     watchEffect(() => {
       // console.log('select fetch', result.value);
       fetchOps.value = result.value;

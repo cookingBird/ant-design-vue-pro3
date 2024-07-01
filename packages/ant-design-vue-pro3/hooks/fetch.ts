@@ -19,6 +19,7 @@ export function useFetch(
       immediate: true,
       debounce: 300,
       onEffect: () => {
+        console.log('onFetch');
         fetchData();
       },
     });
