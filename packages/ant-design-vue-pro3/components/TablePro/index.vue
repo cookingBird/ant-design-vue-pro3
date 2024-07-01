@@ -21,10 +21,14 @@
             :options="{
               slotIs: column.slotIs,
               slotProps: column.slotProps,
-              prop: column.prop ?? column.dataIndex,
+              prop: column.prop,
+              name: column.dataIndex,
               wrapperProps: column.wrapperProps,
             }"
           ></type-node-vue>
+          <template v-else-if="column.dataIndex === 'index'">
+            {{ index + 1 }}
+          </template>
           <template v-else>
             {{ record[column.dataIndex] }}
           </template>

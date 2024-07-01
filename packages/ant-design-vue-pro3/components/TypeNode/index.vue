@@ -98,7 +98,7 @@
     options: TypeNodeProp;
     model: any;
   }>();
-
+  console.log('type node props', props);
   const emits = defineEmits();
   const { valueGetter, valueSetter } = useValue(props.options.name || props.options.prop);
   const generalProp = computed(() => _buildPropTag(props.options));
