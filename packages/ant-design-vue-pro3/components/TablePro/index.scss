@@ -22,6 +22,11 @@
     }
     .ant-table-container {
       overflow-y: auto;
+      border-left: none;
+      .ant-table-body,
+      .ant-table-header {
+        border-left: 1px solid #f0f0f0;
+      }
     }
   }
   // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<

@@ -1,7 +1,7 @@
 <template>
   <a-select
     v-bind="omitProps"
-    :value="value"
+    :value="innerValue"
     :loading="innerLoading"
     :options="builtOptions"
     @update:value="updateValueHandler"
@@ -49,7 +49,7 @@
   }
   // bind model
   const { valueGetter, valueSetter } = useValue(props.prop);
-  const value = computed(() => {
+  const innerValue = computed(() => {
     const res = props.beforeValue!(props.value ?? valueGetter(props.model));
     return res === '' ? undefined : res;
   });
