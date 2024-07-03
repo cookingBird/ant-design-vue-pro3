@@ -1,5 +1,11 @@
 <template>
-  <Input ref="input" v-bind="omitProps" :value="value" @update:value="updateValueHandler">
+  <Input
+    ref="input"
+    v-bind="omitProps"
+    :value="value"
+    :disabled="innerDisabled"
+    @update:value="updateValueHandler"
+  >
     <template v-if="$slots.addonAfter" #addonAfter>
       <slot name="addonAfter"> </slot>
     </template>
@@ -32,6 +38,7 @@
   const omitProps = computed(() =>
     omit(props, 'onUpdate:value', 'beforeValue', 'afterChange'),
   );
+  const innerDisabled = computed(() => props.disabled ?? props.readonly);
   const { valueGetter, valueSetter } = useValue(props.prop);
   const value = computed(() =>
     props.beforeValue(props.value ?? (props.model && valueGetter(props.model))),

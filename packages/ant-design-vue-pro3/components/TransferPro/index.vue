@@ -24,6 +24,7 @@
     beforeValue: (v: any) => v,
     afterChange: (v: any) => v,
     render: (item: any) => item.title,
+    showSelectAll: true,
   });
   console.log('transfer props', props);
   const omitProps = computed(() =>
