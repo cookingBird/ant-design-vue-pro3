@@ -25,6 +25,12 @@
     afterChange: (v: any) => v,
     render: (item: any) => item.title,
     showSelectAll: true,
+    locale: () => ({
+      itemUnit: '项',
+      itemsUnit: '项',
+      notFoundContent: '列表为空',
+      searchPlaceholder: '请输入搜索内容',
+    }),
   });
   console.log('transfer props', props);
   const omitProps = computed(() =>
