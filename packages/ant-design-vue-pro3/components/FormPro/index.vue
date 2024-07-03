@@ -71,6 +71,7 @@
     labelAlign: 'right',
     labelCol: { style: 'width:110px' },
     colon: true,
+    autocomplete: 'off',
   });
 
   const formProps = computed(() =>

@@ -34,9 +34,13 @@
     placeholder: '请输入',
     beforeValue: (v: any) => v,
     afterChange: (v: any) => v,
+    type: 'text',
+    size: 'middle',
+    autocomplete: 'off',
   });
+  console.log('input prop props', props);
   const omitProps = computed(() =>
-    omit(props, 'onUpdate:value', 'beforeValue', 'afterChange'),
+    omit(props, 'onUpdate:value', 'beforeValue', 'afterChange', 'model'),
   );
   const innerDisabled = computed(() => props.disabled ?? props.readonly);
   const { valueGetter, valueSetter } = useValue(props.prop);
