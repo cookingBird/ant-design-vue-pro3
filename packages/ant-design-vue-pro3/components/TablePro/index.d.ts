@@ -10,4 +10,5 @@ export type TablePro = Omit<TableProps, 'scroll'> & {
   dataSource: TableProps['dataSource'];
   autoFitHeight?: boolean;
   styled?: 'default' | 'transparent';
+  scroll?: { x: number; y: number };
 };

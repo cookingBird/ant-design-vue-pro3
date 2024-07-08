@@ -5,8 +5,8 @@
       v-bind="props"
       :class="autoFitHeight ? 'table-pro--autoHeight' : ''"
       :columns="withDefaultCols"
-      :scroll="scroll"
     >
+      <!-- :scroll="scroll" -->
       <template #bodyCell="{ column, record, index }">
         <slot
           :name="column.dataIndex"
@@ -56,11 +56,11 @@
   });
 
   const tableRefWrapper = ref<HTMLDivElement | null>(null);
-  const scroll = ref<{
-    scrollToFirstRowOnChange?: boolean;
-    x?: number;
-    y?: number;
-  }>({});
+  // const scroll = ref<{
+  //   scrollToFirstRowOnChange?: boolean;
+  //   x?: number;
+  //   y?: number;
+  // }>({});
   const withDefaultCols = computed(
     () =>
       props.columns?.map((col) => ({
