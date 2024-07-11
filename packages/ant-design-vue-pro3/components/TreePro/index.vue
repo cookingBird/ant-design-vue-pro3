@@ -14,7 +14,8 @@
     <ant-tree
       ref="treeRef"
       v-bind="treeProps"
-      v-model:expandedKeys="innerExpandedKeys"
+      :expandedKeys="wrapperInnerExpandedKeys"
+      @update:expandedKeys="handleUpdateExpandedKeys"
       :treeData="innerData"
       :onDrop="onDrop"
     >
@@ -81,6 +82,7 @@
     },
   });
   const innerData = ref([] as any);
+  // draggleable wrap
   watch(
     () => props.treeData,
     (val) => {
@@ -93,22 +95,30 @@
     },
     { immediate: true },
   );
-  const innerExpandedKeys = useSessionStorage('treeExpandedKeys-' + props.name, []);
-  watch(
-    () => props.expandedKeys,
-    (val) => {
-      if (val) {
-        // @ts-expect-error
-        innerExpandedKeys.value = val;
-      }
-    },
-    { immediate: true },
+  // >>>>>>>>>>>>>> expand persistence
+  const innerExpandedKeys = useSessionStorage(
+    'treeExpandedKeys-' + props.name,
+    [] as (string | number)[],
   );
+  const wrapperInnerExpandedKeys = computed(() =>
+    innerExpandedKeys.value.length > 0 ? innerExpandedKeys.value : undefined,
+  );
+  const handleUpdateExpandedKeys = (keys: (string | number)[]) => {
+    if (innerExpandedKeys.value.length) {
+      innerExpandedKeys.value = keys;
+    }
+  };
+  watchEffect(() => {
+    if (props.expandedKeys) {
+      innerExpandedKeys.value = [...props.expandedKeys];
+    }
+  });
   onBeforeUnmount(() => {
     if (!props.name) {
       sessionStorage.setItem('treeExpandedKeys-' + props.name, JSON.stringify([]));
     }
   });
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   function onDrop(info: AntTreeNodeDropEvent) {
     const dropKey = info.node.key;
     const dragKey = info.dragNode.key;

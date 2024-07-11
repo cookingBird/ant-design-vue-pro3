@@ -7,7 +7,6 @@ export type TreePro = Omit<
   | 'onUpdate:checkedKeys'
   | 'onUpdate:expandedKeys'
   | 'onUpdate:searchValue'
-  | 'filedNames'
 > & {
   searchValue?: string;
   searchOptions?: InputPro;
