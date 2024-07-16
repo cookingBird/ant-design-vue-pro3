@@ -23,13 +23,20 @@
   const props = withDefaults(defineProps<TransferPropsPro>(), {
     beforeValue: (v: any) => v,
     afterChange: (v: any) => v,
-    render: (item: any) => item.title,
+    render: () => (item: any) => item.title,
     showSelectAll: true,
     locale: () => ({
-      itemUnit: '项',
-      itemsUnit: '项',
+      titles: [],
       notFoundContent: '列表为空',
       searchPlaceholder: '请输入搜索内容',
+      itemUnit: '项',
+      itemsUnit: '项',
+      remove: '移除',
+      selectAll: '全选所有',
+      selectCurrent: '全选当页',
+      selectInvert: '反选当页',
+      removeAll: '取消全选',
+      removeCurrent: '取消当页全选',
     }),
   });
   console.log('transfer props', props);
