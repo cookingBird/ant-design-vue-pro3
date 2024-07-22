@@ -24,6 +24,7 @@
     mode: undefined,
     allowClear: true,
     maxTagCount: 'responsive',
+    showSearch: false,
     filterOption: () => (input: string, option: any) => {
       return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     },

@@ -1,11 +1,16 @@
-export default function getTreeTravel<T extends { children?: T[] }>(hooks: {
-  every: (node: T, parent: T | undefined, index: number) => void;
-}) {
+export default function getTreeTravel<T extends { children?: T[]; child?: T[] }>(
+  hooks: {
+    every: (node: T, parent: T | undefined, index: number) => void;
+  },
+  childrenKey = 'children',
+) {
   const { every } = hooks;
   function travel(data: T, parent: T | undefined, index: number) {
     every(data, parent, index);
-    if (Array.isArray(data.children)) {
-      data.children.forEach((item, index) => {
+    // @ts-expect-error
+    if (Array.isArray(data[childrenKey])) {
+      // @ts-expect-error
+      data[childrenKey].forEach((item, index) => {
         travel(item, data, index);
       });
     }

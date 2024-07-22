@@ -56,6 +56,7 @@
     showSearcher: false,
     selectable: false,
     blockNode: true,
+    draggable: false,
   });
   const emit = defineEmits<{
     'update:searchValue': [val: string];
@@ -70,31 +71,9 @@
   const modelValueHandler = (val: string) => {
     emit('update:searchValue', val);
   };
-  const travel = getTreeTravel({
-    every(node, parent, index) {
-      if (!parent) {
-        // @ts-expect-error
-        node.key = index + '';
-      } else {
-        // @ts-expect-error
-        node.key = parent.key + '-' + index;
-      }
-    },
-  });
+
   const innerData = ref([] as any);
-  // draggleable wrap
-  watch(
-    () => props.treeData,
-    (val) => {
-      if (props.draggable && !props.treeData?.[0].key) {
-        innerData.value = val;
-        travel(innerData.value);
-      } else {
-        innerData.value = val;
-      }
-    },
-    { immediate: true },
-  );
+
   // >>>>>>>>>>>>>> expand persistence
   const innerExpandedKeys = useSessionStorage(
     'treeExpandedKeys-' + props.name,
@@ -119,6 +98,30 @@
     }
   });
   // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  // >>>>>>>>>>>>>>>>>>>>>>>>>>>>dragable
+  const travel = getTreeTravel({
+    every(node, parent, index) {
+      if (!parent) {
+        // @ts-expect-error
+        node.key = index + '';
+      } else {
+        // @ts-expect-error
+        node.key = parent.key + '-' + index;
+      }
+    },
+  });
+  watch(
+    () => props.treeData,
+    (val) => {
+      if (props.draggable && !props.treeData?.[0].key) {
+        innerData.value = val;
+        travel(innerData.value);
+      } else {
+        innerData.value = val;
+      }
+    },
+    { immediate: true },
+  );
   function onDrop(info: AntTreeNodeDropEvent) {
     const dropKey = info.node.key;
     const dragKey = info.dragNode.key;
@@ -186,6 +189,7 @@
     }
     innerData.value = data;
   }
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   defineExpose({
     treeRef,
   });
