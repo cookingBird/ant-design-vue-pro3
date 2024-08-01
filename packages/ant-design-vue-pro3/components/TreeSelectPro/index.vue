@@ -1,5 +1,5 @@
 <template>
-  <a-tree-select
+  <AntTreeSelect
     v-bind="omitProps"
     class="tree-select-pro"
     :value="value"
@@ -7,10 +7,12 @@
     :treeData="builtOptions"
     @update:value="updateValueHandler"
   >
-  </a-tree-select>
+  </AntTreeSelect>
 </template>
 
 <script lang="ts" setup>
+  import { ref, computed, toRefs, watchEffect } from 'vue';
+  import { TreeSelect as AntTreeSelect } from 'ant-design-vue';
   import type { SelectOption, TreeSelectPropsPro } from '.';
   import { useFetch } from '../../hooks/fetch';
   import { useValue } from '../../hooks/value';
@@ -24,6 +26,7 @@
     placeholder: '请选择',
     mode: undefined,
     allowClear: true,
+    // @ts-expect-error
     dropdownStyle: "{ maxHeight: '400px', overflow: 'auto' }",
     showSearch: true,
   });

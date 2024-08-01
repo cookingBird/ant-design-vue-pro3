@@ -8,5 +8,12 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "ant-design-vue": "^3",
+    "vue": "^3.4.34",
+    "@ant-design/icons-vue": "^7.0.1",
+    "@vueuse/core": "^10.11.0"
+  }
 }

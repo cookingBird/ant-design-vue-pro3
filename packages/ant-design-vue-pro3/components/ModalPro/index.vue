@@ -1,5 +1,5 @@
 <template>
-  <modal
+  <AntModal
     v-bind="omitProps"
     v-model:visible="visible"
     class="modal-pro"
@@ -17,12 +17,13 @@
     <template v-if="$slots.footer" #footer>
       <slot name="footer"> </slot>
     </template>
-  </modal>
+  </AntModal>
 </template>
 
 <script lang="ts" setup>
-  import { Modal } from 'ant-design-vue';
-  import type { ModalPro } from '.';
+  import { ref, computed, watch, watchEffect, useAttrs, onMounted } from 'vue';
+  import { Modal as AntModal } from 'ant-design-vue';
+  import type { ModalPro } from './index.d';
   import { omit } from '../../tools/tool';
   import useLoading from '../../hooks/loading';
   const attrs = useAttrs();

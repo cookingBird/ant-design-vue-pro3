@@ -1,15 +1,17 @@
 <template>
-  <a-checkbox
+  <Checkbox
     v-bind="omitProps"
     class="checkbox-pro"
     :checked="value"
     :onUpdate:checked="updateValueHandler"
   >
     <slot></slot>
-  </a-checkbox>
+  </Checkbox>
 </template>
 
 <script setup lang="ts">
+  import { ref, computed } from 'vue';
+  import { Checkbox } from 'ant-design-vue';
   import type { CheckboxPro } from '.';
   import { useValue } from '../../hooks/value';
   import { omit, isPresent } from '../../tools/tool';
@@ -29,11 +31,9 @@
     const { checked, model, beforeValue } = props;
 
     const _n = beforeValue(
-      isPresent(checked)
-        ? checked
-        : isPresent(model)
-        ? valueGetter(model)
-        : innerChecked.value,
+      isPresent(checked) ? checked
+      : isPresent(model) ? valueGetter(model)
+      : innerChecked.value,
     );
     return _n;
   });

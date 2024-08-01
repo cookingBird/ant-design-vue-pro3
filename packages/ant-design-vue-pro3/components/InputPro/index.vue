@@ -22,6 +22,7 @@
 </template>
 
 <script setup lang="ts">
+  import { ref, computed, watch, watchEffect, useAttrs, onMounted } from 'vue';
   import { Input } from 'ant-design-vue';
   import type { InputPro } from '.';
   import { omit } from '../../tools/tool';

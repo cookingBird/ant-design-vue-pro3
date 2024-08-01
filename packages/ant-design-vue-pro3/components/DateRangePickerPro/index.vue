@@ -1,5 +1,5 @@
 <template>
-  <a-range-picker
+  <AntRangePicker
     v-bind="omitProps"
     :value="value"
     class="date-range-picker-pro"
@@ -20,10 +20,12 @@
     <template v-if="$slots.superPrevIcon" #superPrevIcon>
       <slot name="superPrevIcon"></slot>
     </template>
-  </a-range-picker>
+  </AntRangePicker>
 </template>
 
 <script setup lang="ts">
+  import { computed, useAttrs } from 'vue';
+  import { RangePicker as AntRangePicker} from "ant-design-vue"
   import type { DateRangePickerPro } from '.';
   import { useValue } from '../../hooks/value';
   import { omit } from '../../tools/tool';

@@ -39,9 +39,10 @@
 </template>
 
 <script lang="ts" setup>
+  import { ref, computed } from 'vue';
+  import { Table as AntTable } from 'ant-design-vue';
   import TypeNodeVue from '../TypeNode/index.vue';
   import type { TablePro } from '.';
-  import { Table as AntTable } from 'ant-design-vue';
   defineOptions({
     name: 'TablePro',
     inheritAttrs: true,

@@ -1,5 +1,5 @@
 <template>
-  <a-transfer
+  <AntTransfer
     v-bind="omitProps"
     :dataSource="innerDataSource"
     :targetKeys="targetKeys"
@@ -9,10 +9,12 @@
     <template v-if="$slots.children" #children="slotProps">
       <slot name="children" v-bind="slotProps"> </slot>
     </template>
-  </a-transfer>
+  </AntTransfer>
 </template>
 
 <script setup lang="ts">
+  import { ref, computed, watchEffect } from 'vue';
+  import { Transfer as AntTransfer } from 'ant-design-vue';
   import { type TransferPropsPro } from './index.d';
   import { useFetch } from '../../hooks/fetch';
   import { omit } from '../../tools/tool';
@@ -39,7 +41,6 @@
       removeCurrent: '取消当页全选',
     }),
   });
-  console.log('transfer props', props);
   const omitProps = computed(() =>
     omit(
       props,

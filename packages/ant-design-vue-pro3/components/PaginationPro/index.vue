@@ -1,11 +1,12 @@
 <template>
   <div class="pagination-pro-wrapper">
-    <a-pagination v-bind="{ ...$attrs, ...props }"> <slot></slot> </a-pagination>
+    <AntPagination v-bind="{ ...$attrs, ...props }"> <slot></slot> </AntPagination>
   </div>
 </template>
 
 <script setup lang="ts">
   import type { PaginationPro } from '.';
+  import {Pagination as AntPagination} from "ant-design-vue"
 
   defineOptions({
     name: 'PaginationPro',

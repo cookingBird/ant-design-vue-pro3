@@ -11,7 +11,7 @@
         <search-outlined />
       </template>
     </input-pro>
-    <ant-tree
+    <AntTree
       ref="treeRef"
       v-bind="treeProps"
       :expandedKeys="wrapperInnerExpandedKeys"
@@ -25,11 +25,12 @@
       <template v-if="$slots.title" #title="slotProps">
         <slot name="title" v-bind="slotProps"> </slot>
       </template>
-    </ant-tree>
+    </AntTree>
   </div>
 </template>
 
 <script setup lang="ts">
+  import { ref, computed, watch, watchEffect, useAttrs, onMounted } from 'vue';
   import InputPro from '../InputPro';
   import { Tree as AntTree } from 'ant-design-vue';
   import type { TreePro } from './index.d';

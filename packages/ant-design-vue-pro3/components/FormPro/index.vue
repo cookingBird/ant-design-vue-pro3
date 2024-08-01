@@ -56,12 +56,12 @@
 </template>
 
 <script setup lang="ts">
+  import { ref, computed } from 'vue';
+  import { Form as AntForm } from 'ant-design-vue';
   import { omit } from '../../tools/tool';
   import type { FormProProps, FormItemProOptions } from './index.d';
   import { callValue } from '../../tools/visible';
   import TypeNode from '../TypeNode/index.vue';
-  import { defineExpose, ref } from 'vue';
-  import { Form as AntForm } from 'ant-design-vue';
   defineOptions({
     name: 'AFormPro',
     inheritAttrs: true,
@@ -69,6 +69,7 @@
   const props = withDefaults(defineProps<FormProProps>(), {
     styled: 'default',
     labelAlign: 'right',
+    // @ts-expect-error
     labelCol: { style: 'width:110px' },
     colon: true,
     autocomplete: 'off',
@@ -77,7 +78,7 @@
   const formProps = computed(() =>
     omit({ ...props, ...props.options }, 'columns', 'row', 'options'),
   );
-  console.log('form pro props', formProps);
+
   function _buildName(options: FormItemProOptions) {
     const { prop: _prop1, name: _name1 } = options.formItemProps;
     const { prop = _prop1, name = _name1 } = options;

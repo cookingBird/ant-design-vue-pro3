@@ -7,6 +7,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { computed } from 'vue';
   import { RadioGroup } from 'ant-design-vue';
   import type { RadioGroupPro } from './index.d.ts';
   import { omit } from '../../tools/tool';
