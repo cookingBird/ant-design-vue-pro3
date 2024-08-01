@@ -33,6 +33,7 @@
     okText: '确认',
     cancelText: '取消',
     visible: undefined,
+    mask: true,
   });
   console.log('modal pro props', props);
   const emit = defineEmits<{
