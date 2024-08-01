@@ -15,6 +15,7 @@
 </template>
 
 <script setup lang="ts">
+  import { ref, computed, watch, watchEffect, useAttrs, onMounted } from 'vue';
   import type { TabsPro } from '.';
   import useQueryStorage from '../../hooks/routerPersistence';
   import { omit } from '../../tools/tool';

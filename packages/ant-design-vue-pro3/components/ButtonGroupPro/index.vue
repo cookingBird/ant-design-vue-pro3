@@ -17,6 +17,7 @@
   </div>
 </template>
 <script setup lang="ts">
+  import { ref, computed, watch, watchEffect } from 'vue';
   import { omit } from '../../tools/tool';
   import { callValue } from '../../tools/visible';
   import type { ButtonGroupPro } from '.';

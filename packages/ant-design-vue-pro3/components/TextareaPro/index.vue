@@ -1,14 +1,15 @@
 <template>
-  <a-textarea
+  <AntTextarea
     v-bind="omitProps"
     :value="value"
     :placeholder="props.placeholder"
     @update:value="updateValueHandler"
-  ></a-textarea>
+  ></AntTextarea>
 </template>
 
 <script lang="ts" setup>
-  import { Textarea as ATextarea } from 'ant-design-vue';
+  import { ref, computed, watch, watchEffect, useAttrs, onMounted } from 'vue';
+  import { Textarea as AntTextarea } from 'ant-design-vue';
   import type { TextAreaPro } from './index.d';
   import { useValue } from '../../hooks/value';
   import { omit } from '../../tools/tool';

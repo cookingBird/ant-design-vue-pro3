@@ -19,7 +19,6 @@ export function useFetch(
       immediate: true,
       debounce: 300,
       onEffect: () => {
-        console.log('onFetch');
         fetchData();
       },
     });
@@ -59,6 +58,7 @@ export function buildUrl(url: string | undefined, model: Record<string, any>) {
   const regexps = [/{(.*?)}/g, /\[(.*?)\]/g];
   const m = unref(model);
   return regexps.reduce((acc, regexp) => {
+    // @ts-expect-error
     return acc.replaceAll(regexp, (_, p) => {
       return m[p];
     });

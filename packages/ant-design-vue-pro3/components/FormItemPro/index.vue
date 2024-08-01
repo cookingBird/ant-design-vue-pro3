@@ -1,11 +1,12 @@
 <template>
-  <a-form-item v-bind="props" class="form-item-pro">
+  <AntFormItem v-bind="props" class="form-item-pro">
     <slot></slot>
-  </a-form-item>
+  </AntFormItem>
 </template>
 
 <script setup lang="ts">
   import type { FormItemProProps } from '.';
+  import { FormItem as AntFormItem } from 'ant-design-vue';
   const props = withDefaults(defineProps<FormItemProProps>(), {
     autoLink: true,
     colon: undefined,

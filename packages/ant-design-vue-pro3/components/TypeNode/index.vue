@@ -54,21 +54,21 @@
       :model="model"
       :prop="options.name ?? options.prop"
     />
-    <Switch
+    <InputNumberPro
+      v-else-if="callFunction(options.slotIs, model) === 'inputNumber'"
+      v-bind="options.slotProps"
+      :model="model"
+      :prop="options.name ?? options.prop"
+    >
+    </InputNumberPro>
+    <SwitchPro
       v-else-if="callFunction(options.slotIs, model) === 'switch'"
       :options="options"
       v-bind="options.slotProps"
       :value="valueGetter(model)"
       @update:value="(e) => valueSetter(model, e)"
     >
-    </Switch>
-    <InputNumber
-      v-else-if="callFunction(options.slotIs, model) === 'inputNumber'"
-      :value="valueGetter(model)"
-      v-bind="options.slotProps"
-      @update:value="(e) => valueSetter(model, e)"
-    >
-    </InputNumber>
+    </SwitchPro>
     <Cascader
       v-else-if="callFunction(options.slotIs, model) === 'cascader'"
       v-bind="options.slotProps"
@@ -81,15 +81,17 @@
 
 <script setup lang="ts">
   /* eslint-disable vue/valid-define-emits */
-  import { InputNumber, Switch, Cascader } from 'ant-design-vue';
+  import { Cascader } from 'ant-design-vue';
   import type { TypeNodeProp } from '.';
   import { useValue } from '../../hooks/value';
   import { computed } from 'vue';
   import ButtonGroupPro from '../ButtonGroupPro/index.vue';
   import DatePickerPro from '../DatePickerPro/index.vue';
   import DateRangePickerPro from '../DateRangePickerPro/index.vue';
-  import { callFunction } from '../../tools/tool';
   import TransferPro from '../TransferPro/index.vue';
+  import InputNumberPro from '../InputNumberPro/index.vue';
+  import SwitchPro from '../SwitchPro/index.vue';
+  import { callFunction } from '../../tools/tool';
   defineOptions({
     name: 'TypeNode',
   });
@@ -98,7 +100,6 @@
     options: TypeNodeProp;
     model: any;
   }>();
-  console.log('type node props', props);
   const emits = defineEmits();
   const { valueGetter, valueSetter } = useValue(props.options.name || props.options.prop);
   const generalProp = computed(() => _buildPropTag(props.options));

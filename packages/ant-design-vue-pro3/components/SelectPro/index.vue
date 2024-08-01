@@ -1,15 +1,17 @@
 <template>
-  <a-select
+  <AntSelect
     v-bind="omitProps"
     :value="innerValue"
     :loading="innerLoading"
     :options="builtOptions"
     @update:value="updateValueHandler"
   >
-  </a-select>
+  </AntSelect>
 </template>
 
 <script lang="ts" setup>
+  import { ref, computed, watchEffect } from 'vue';
+  import { Select as AntSelect } from 'ant-design-vue';
   import type { SelectOption, SelectPro } from '.';
   import { useFetch } from '../../hooks/fetch';
   import { useValue } from '../../hooks/value';
@@ -30,7 +32,6 @@
     },
   });
 
-  console.log('select props', props);
   const omitProps = computed(() =>
     omit(props, 'model', 'fetch', 'open', 'onUpdate:value', 'beforeValue', 'afterChange'),
   );
@@ -41,7 +42,11 @@
   );
   const innerLoading = ref(false);
   if (props.fetch) {
-    const { result, loading } = useFetch(props.fetch, props.model, props.effectKeys);
+    const { result, loading } = useFetch(
+      props.fetch,
+      computed(() => props.model),
+      props.effectKeys,
+    );
     watchEffect(() => {
       // console.log('select fetch', result.value);
       fetchOps.value = result.value;

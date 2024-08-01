@@ -1,12 +1,14 @@
 <template>
-  <a-switch
+  <AntSwitch
     v-bind="omitProps"
     :checked="innerValue"
     @update:checked="updateValueHandler"
-  ></a-switch>
+  ></AntSwitch>
 </template>
 
 <script setup lang="ts">
+  import { computed } from 'vue';
+  import { Switch as AntSwitch } from 'ant-design-vue';
   import type { SwitchPro } from '.';
   import { omit } from '../../tools/tool';
   import { useValue } from '../../hooks/value';

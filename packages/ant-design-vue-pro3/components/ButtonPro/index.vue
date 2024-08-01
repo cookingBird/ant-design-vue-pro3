@@ -14,6 +14,7 @@
 </template>
 
 <script setup lang="ts">
+  import { ref, computed, watch, watchEffect } from 'vue';
   import { Button } from 'ant-design-vue';
   import useLoading from '../../hooks/loading';
   import type { ButtonPro } from '.';
@@ -29,12 +30,9 @@
     model: null,
     active: false,
   });
-  console.log('button props', props);
 
   // omit passive onClick event
-  const omitProps = computed(() =>
-    omit(props, ['onClick', 'model', 'confirm', 'prefix']),
-  );
+  const omitProps = computed(() => omit(props, 'onClick', 'model', 'confirm'));
   function clickHandler() {
     loading.value = true;
     props.onClick?.(done, props.model);
