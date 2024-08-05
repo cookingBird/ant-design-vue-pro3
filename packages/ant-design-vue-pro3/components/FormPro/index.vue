@@ -62,6 +62,9 @@
   import type { FormProProps, FormItemProOptions } from './index.d';
   import { callValue } from '../../tools/visible';
   import TypeNode from '../TypeNode/index.vue';
+  import RowPro from '../GridPro/RowPro.vue';
+  import ColPro from '../GridPro/ColPro.vue';
+  import FormItemPro from '../FormItemPro/index.vue';
   defineOptions({
     name: 'AFormPro',
     inheritAttrs: true,

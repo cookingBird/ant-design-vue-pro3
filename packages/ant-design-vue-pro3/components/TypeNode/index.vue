@@ -21,7 +21,6 @@
       :model="model"
     >
     </textarea-pro>
-
     <select-pro
       v-else-if="callFunction(options.slotIs, model) === 'select'"
       v-bind="options.slotProps"
@@ -85,6 +84,10 @@
   import type { TypeNodeProp } from '.';
   import { useValue } from '../../hooks/value';
   import { computed } from 'vue';
+  import InputPro from '../InputPro/index.vue';
+  import RadioGroupPro from '../RadioGroupPro/index.vue';
+  import TextareaPro from '../TextareaPro/index.vue';
+  import SelectPro from '../SelectPro/index.vue';
   import ButtonGroupPro from '../ButtonGroupPro/index.vue';
   import DatePickerPro from '../DatePickerPro/index.vue';
   import DateRangePickerPro from '../DateRangePickerPro/index.vue';
