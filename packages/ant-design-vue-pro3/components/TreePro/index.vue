@@ -15,9 +15,9 @@
       ref="treeRef"
       v-bind="treeProps"
       :expandedKeys="wrapperInnerExpandedKeys"
-      @update:expandedKeys="handleUpdateExpandedKeys"
       :treeData="innerData"
       :onDrop="onDrop"
+      @update:expandedKeys="handleUpdateExpandedKeys"
     >
       <template v-if="$slots.switcherIcon" #switcherIcon="slotProps">
         <slot name="switcherIcon" v-bind="slotProps"> </slot>
