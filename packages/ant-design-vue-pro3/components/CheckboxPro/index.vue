@@ -31,9 +31,11 @@
     const { checked, model, beforeValue } = props;
 
     const _n = beforeValue(
-      isPresent(checked) ? checked
-      : isPresent(model) ? valueGetter(model)
-      : innerChecked.value,
+      isPresent(checked)
+        ? checked
+        : isPresent(model)
+        ? valueGetter(model)
+        : innerChecked.value,
     );
     return _n;
   });

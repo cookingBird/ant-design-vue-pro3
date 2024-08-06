@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
   import type { PaginationPro } from '.';
-  import {Pagination as AntPagination} from "ant-design-vue"
+  import { Pagination as AntPagination } from 'ant-design-vue';
 
   defineOptions({
     name: 'PaginationPro',
