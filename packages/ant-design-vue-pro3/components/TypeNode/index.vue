@@ -98,7 +98,6 @@
   defineOptions({
     name: 'TypeNode',
   });
-
   const props = defineProps<{
     options: TypeNodeProp;
     model: any;
