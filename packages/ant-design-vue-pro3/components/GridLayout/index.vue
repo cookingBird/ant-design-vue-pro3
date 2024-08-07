@@ -4,7 +4,7 @@
     :style="{
       gridTemplateRows: `repeat(${rows},1fr)`,
       gridTemplateColumns: `repeat(${cols},1fr)`,
-      gap: route.query.gap ? `${route.query.gap}` : '0',
+      gap: props.gap,
     }"
   >
     <template
@@ -39,12 +39,13 @@
     withDefaults,
     defineProps,
     defineOptions,
+    ref,
+    watchEffect,
   } from 'vue';
   import { useKeyModifier } from '@vueuse/core';
   defineOptions({
     name: 'GridLayout',
   });
-  const route = useRoute();
   export type Layout = {
     pos: number;
     w: number;
@@ -68,10 +69,12 @@
       layout?: (Pick<Layout, 'w' | 'h' | 'static'> & { pos?: number })[];
       layoutData?: { pos: string | number }[];
       disabled?: boolean;
+      gap?: number;
     }>(),
     {
       rows: 3,
       cols: 4,
+      gap: 0,
       splitColPosMap: () => ({
         0: [0, 3, 5],
         3: [3, 5],

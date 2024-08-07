@@ -12,5 +12,6 @@
   "license": "ISC",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
-  }
+  },
+  "devDependencies": {}
 }
