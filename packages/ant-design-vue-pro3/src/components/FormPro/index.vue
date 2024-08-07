@@ -59,7 +59,7 @@
   import { ref, computed } from 'vue';
   import { Form as AntForm } from 'ant-design-vue';
   import { omit } from '../../tools/tool';
-  import type { FormProProps, FormItemProOptions } from './index.d';
+  import type { FormProProps, FormItemProOptions } from '.';
   import { callValue } from '../../tools/visible';
   import TypeNode from '../TypeNode/index.vue';
   import RowPro from '../GridPro/RowPro.vue';

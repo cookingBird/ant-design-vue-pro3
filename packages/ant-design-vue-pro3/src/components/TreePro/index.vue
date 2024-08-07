@@ -33,7 +33,7 @@
   import { ref, computed, watch, watchEffect, useAttrs, onMounted } from 'vue';
   import InputPro from '../InputPro';
   import { Tree as AntTree } from 'ant-design-vue';
-  import type { TreePro } from './index.d';
+  import type { TreePro } from '.';
   import { omit, pick } from '../../tools/tool';
   import { SearchOutlined } from '@ant-design/icons-vue';
   import getTreeTravel from '../../tools/getTreeTravel';
