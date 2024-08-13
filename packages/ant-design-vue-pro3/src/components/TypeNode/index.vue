@@ -108,14 +108,13 @@
 
   function _buildPropTag(options: TypeNodeProp) {
     const p = options.name || options.prop;
+    if (!p) return '';
     let propTag;
     if (Array.isArray(p)) {
       propTag = p.join('.');
-    } else if (typeof p === 'string') {
+    }
+    if (typeof p === 'string') {
       propTag = p;
-    } else {
-      console.warn('TypeNode _buildPropTag fn name|prop is empty');
-      propTag = '';
     }
     return propTag;
   }

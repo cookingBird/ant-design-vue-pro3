@@ -15,7 +15,7 @@
 <script setup lang="ts">
   import { ref, computed, watchEffect } from 'vue';
   import { Transfer as AntTransfer } from 'ant-design-vue';
-  import { type TransferPropsPro } from './index.d';
+  import { type TransferPropsPro } from '.';
   import { useFetch } from '../../hooks/fetch';
   import { omit } from '../../tools/tool';
   import { useValue } from '../../hooks/value';

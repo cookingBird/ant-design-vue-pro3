@@ -1,25 +1,24 @@
 <template>
-  <AntTextarea
+  <radio-group
     v-bind="omitProps"
     :value="value"
-    :placeholder="props.placeholder"
     @update:value="updateValueHandler"
-  ></AntTextarea>
+  ></radio-group>
 </template>
 
 <script lang="ts" setup>
-  import { ref, computed, watch, watchEffect, useAttrs, onMounted } from 'vue';
-  import { Textarea as AntTextarea } from 'ant-design-vue';
-  import type { TextAreaPro } from './index.d';
-  import { useValue } from '../../hooks/value';
+  import { computed } from 'vue';
+  import { RadioGroup } from 'ant-design-vue';
+  import type { RadioGroupPro } from './index.js';
   import { omit } from '../../tools/tool';
-
-  const props = withDefaults(defineProps<TextAreaPro>(), {
+  import { useValue } from '../../hooks/value';
+  const props = withDefaults(defineProps<RadioGroupPro>(), {
     beforeValue: (v: any) => v,
     afterChange: (v: any) => v,
-    placeholder: '请输入',
-    bordered: true,
   });
+  const emit = defineEmits<{
+    'update:value': [val: any];
+  }>();
   const omitProps = computed(() =>
     omit(props, 'onUpdate:value', 'beforeValue', 'afterChange'),
   );
@@ -27,9 +26,6 @@
   const value = computed(() =>
     props.beforeValue!(props.value ?? valueGetter(props.model)),
   );
-  const emit = defineEmits<{
-    'update:value': [val: any];
-  }>();
   const updateValueHandler = (val: any) => {
     const _n = props.afterChange!(val);
     emit('update:value', _n);
