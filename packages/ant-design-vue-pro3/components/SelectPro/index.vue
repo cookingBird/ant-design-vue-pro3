@@ -31,6 +31,7 @@
       return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     },
   });
+  console.log('select props', props);
 
   const omitProps = computed(() =>
     omit(props, 'model', 'fetch', 'open', 'onUpdate:value', 'beforeValue', 'afterChange'),
