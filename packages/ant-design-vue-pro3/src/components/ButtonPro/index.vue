@@ -23,7 +23,7 @@
 
   defineOptions({
     name: 'ButtonPro',
-    inheritAttrs: false,
+    inheritAttrs: true,
   });
 
   const props = withDefaults(defineProps<ButtonPro>(), {
