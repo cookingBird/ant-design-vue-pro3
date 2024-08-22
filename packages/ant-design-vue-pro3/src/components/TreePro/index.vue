@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, watch, watchEffect, useAttrs, onMounted } from 'vue';
+  import { ref, computed, watch, watchEffect, useAttrs } from 'vue';
   import InputPro from '../InputPro';
   import { Tree as AntTree } from 'ant-design-vue';
   import type { TreePro } from '.';
@@ -114,11 +114,13 @@
   watch(
     () => props.treeData,
     (val) => {
-      if (props.draggable && !props.treeData?.[0].key) {
-        innerData.value = val;
-        travel(innerData.value);
-      } else {
-        innerData.value = val;
+      if (val?.length) {
+        if (props.draggable && !props.treeData![0]!.key) {
+          innerData.value = val;
+          travel(innerData.value);
+        } else {
+          innerData.value = val;
+        }
       }
     },
     { immediate: true },
