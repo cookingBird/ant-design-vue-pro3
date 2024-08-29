@@ -11,4 +11,8 @@ export type TransferPropsPro = Omit<TransferProps, 'onUpdate:targetKeys'> &
     'effectKeys'?: string[];
     'fetch'?: (model: any) => Promise<unknown[]>;
     'onUpdate:targetKeys'?: (val: any) => void;
+    'sortable'?: {
+      left?: boolean;
+      right?: boolean;
+    };
   };

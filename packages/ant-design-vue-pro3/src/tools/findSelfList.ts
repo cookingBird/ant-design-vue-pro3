@@ -5,7 +5,6 @@ export default function findSelfList<T extends { children?: T[] }>(
   _filed = 'key',
 ) {
   data?.forEach((item, index) => {
-    // @ts-expect-error
     if (item[_filed] === key) {
       return callback(item, index, data);
     }

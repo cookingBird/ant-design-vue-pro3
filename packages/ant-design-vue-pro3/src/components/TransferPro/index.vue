@@ -1,5 +1,6 @@
 <template>
   <AntTransfer
+    ref="transfer"
     v-bind="omitProps"
     :dataSource="innerDataSource"
     :targetKeys="targetKeys"
@@ -9,16 +10,28 @@
     <template v-if="$slots.children" #children="slotProps">
       <slot name="children" v-bind="slotProps"> </slot>
     </template>
+    <template #render="item">
+      <div class="ant-transfer-list-content-item-text__item" :data-key="item.key">
+        <div class="content">
+          <slot name="render" v-bind="item"> {{ props.render(item) }} </slot>
+        </div>
+        <span class="handle">
+          <Handle />
+        </span>
+      </div>
+    </template>
   </AntTransfer>
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, watchEffect } from 'vue';
+  import { ref, computed, watchEffect, onMounted, nextTick } from 'vue';
   import { Transfer as AntTransfer } from 'ant-design-vue';
   import { type TransferPropsPro } from '.';
   import { useFetch } from '../../hooks/fetch';
   import { omit } from '../../tools/tool';
   import { useValue } from '../../hooks/value';
+  import Handle from './Handle.vue';
+  import Sortable from 'sortablejs';
   defineOptions({
     name: 'TransferPro',
   });
@@ -40,7 +53,12 @@
       removeAll: '取消全选',
       removeCurrent: '取消当页全选',
     }),
+    sortable: () => ({
+      left: false,
+      right: false,
+    }),
   });
+  const transfer = ref(null);
   const omitProps = computed(() =>
     omit(
       props,
@@ -51,6 +69,7 @@
       'onUpdate:targetKeys',
       'effectKeys',
       'prop',
+      'render',
     ),
   );
   const fetchDataSource = ref([]);
@@ -61,14 +80,61 @@
       props.effectKeys,
     );
     watchEffect(() => {
-      // @ts-expect-error
       fetchDataSource.value = result.value;
     });
   }
   const innerDataSource = computed(() => props.dataSource ?? fetchDataSource.value);
   watchEffect(() => {
-    console.log(innerDataSource.value);
+    if (innerDataSource.value.length) {
+      nextTick(initSearch);
+    }
   });
+  let leftSortInstance, rightSortInstance;
+  function initSearch() {
+    if (!transfer.value) return;
+    const [left, right] = Array.from(
+      (transfer.value.$el as HTMLElement).querySelectorAll('.ant-transfer-list-content'),
+    );
+    if (props.sortable.left && left) {
+      leftSortInstance?.destroy();
+      const list: HTMLElement[] = Array.from(
+        left.querySelectorAll(
+          '.ant-transfer-list-content-item-text>.ant-transfer-list-content-item-text__item',
+        ),
+      );
+      list.forEach((el) => {
+        const [content, handle] = Array.from(el.children);
+        content.classList.add('content--drag');
+        handle.classList.add('handle--visible');
+      });
+      leftSortInstance = Sortable.create(left, {
+        handle: '.handle',
+      });
+    }
+    if (props.sortable.right && right) {
+      rightSortInstance?.destroy();
+      const list: HTMLElement[] = Array.from(
+        right.querySelectorAll(
+          '.ant-transfer-list-content-item-text>.ant-transfer-list-content-item-text__item',
+        ),
+      );
+      list.forEach((el) => {
+        const [content, handle] = Array.from(el.children);
+        content.classList.add('content--drag');
+        handle.classList.add('handle--visible');
+      });
+      rightSortInstance = Sortable.create(right, {
+        handle: '.handle',
+        onEnd(evt) {
+          const sortedKeys = Array.from<HTMLElement>(evt.to.children).map(
+            (el) => (el.children[1].children[0] as HTMLElement).dataset.key,
+          );
+          updateValueHandler(sortedKeys);
+        },
+      });
+    }
+  }
+
   // bind model
   const { valueGetter, valueSetter } = useValue(props.prop);
   const targetKeys = computed(() =>

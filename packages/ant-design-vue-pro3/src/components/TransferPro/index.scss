@@ -8,3 +8,31 @@
   flex-grow: 0;
   flex-basis: 0;
 }
+
+.transfer-pro .ant-transfer-list .ant-transfer-list-content-item-text {
+  &__item {
+    // display: flex;
+    // justify-content: space-between;
+    position: relative;
+    width: 100%;
+    .content {
+      &--drag {
+        margin-right: 30px;
+        overflow: hidden;
+        width: calc(100% - 30px);
+      }
+    }
+    .handle {
+      display: none;
+      position: absolute;
+      right: 0px;
+      top: 0px;
+      font-size: large;
+      cursor: grab;
+      z-index: 10;
+      &--visible {
+        display: block;
+      }
+    }
+  }
+}

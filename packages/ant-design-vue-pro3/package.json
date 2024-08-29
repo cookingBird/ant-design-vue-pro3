@@ -20,6 +20,7 @@
     "@vueuse/core": "^10.11.0",
     "ant-design-vue": "^3.2.20",
     "draggable-resizable-vue3": "1.0.94-beta",
-    "vue": "^3.4.34"
+    "vue": "^3.4.34",
+    "sortablejs": "1.15.2"
   }
 }

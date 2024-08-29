@@ -30,8 +30,8 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, watch, watchEffect, useAttrs } from 'vue';
-  import InputPro from '../InputPro';
+  import { ref, computed, watch, watchEffect, useAttrs, onBeforeUnmount } from 'vue';
+  import InputPro from '../InputPro/index.vue';
   import { Tree as AntTree } from 'ant-design-vue';
   import type { TreePro } from '.';
   import { omit, pick } from '../../tools/tool';
@@ -128,7 +128,7 @@
   function onDrop(info: AntTreeNodeDropEvent) {
     const dropKey = info.node.key;
     const dragKey = info.dragNode.key;
-    // @ts-expect-error
+
     const dropPos = info.node.pos.split('-');
     const dropPosition = info.dropPosition - Number(dropPos[dropPos.length - 1]);
 
@@ -179,14 +179,11 @@
         },
       );
       if (dropPosition === -1) {
-        // @ts-expect-error
         ar.splice(i, 0, dragObj);
       } else {
-        // @ts-expect-error
         ar.splice(i + 1, 0, dragObj);
       }
       setTimeout(() => {
-        // @ts-expect-error
         emit('drop', info, [...ar]);
       });
     }
