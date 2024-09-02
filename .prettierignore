@@ -1,0 +1,7 @@
+src/lib/*
+create-bundle.js
+public
+dist
+node_modules
+.vscode
+.husky

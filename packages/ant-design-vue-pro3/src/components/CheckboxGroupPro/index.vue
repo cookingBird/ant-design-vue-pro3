@@ -8,6 +8,6 @@
   const props = defineProps<CheckboxGroupPro>();
 </script>
 
-<style>
+<style lang="scss">
   @import './index.scss';
 </style>

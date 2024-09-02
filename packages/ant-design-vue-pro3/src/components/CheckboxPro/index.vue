@@ -51,4 +51,4 @@
   };
 </script>
 
-<style scoped></style>
+<style></style>

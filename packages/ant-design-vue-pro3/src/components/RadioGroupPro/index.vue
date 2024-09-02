@@ -9,12 +9,23 @@
 <script lang="ts" setup>
   import { computed } from 'vue';
   import { RadioGroup } from 'ant-design-vue';
-  import type { RadioGroupPro } from './index.js';
+  import { radioGroupProps } from 'ant-design-vue/es/radio/Group';
   import { omit } from '../../tools/tool';
   import { useValue } from '../../hooks/value';
-  const props = withDefaults(defineProps<RadioGroupPro>(), {
-    beforeValue: (v: any) => v,
-    afterChange: (v: any) => v,
+  const props = defineProps({
+    ...radioGroupProps(),
+    // data bind
+    model: Object,
+    prop: String,
+    // value convert
+    beforeValue: {
+      type: Function,
+      default: (v) => v,
+    },
+    afterChange: {
+      type: Function,
+      default: (v) => v,
+    },
   });
   const emit = defineEmits<{
     'update:value': [val: any];

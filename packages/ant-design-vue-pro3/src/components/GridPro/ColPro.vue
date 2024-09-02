@@ -6,7 +6,10 @@
 
 <script setup lang="ts">
   import { Col, type ColProps } from 'ant-design-vue';
-  const props = withDefaults(defineProps<ColProps>(), {});
+  import { colProps } from 'ant-design-vue/lib/grid/Col.js';
+  const props = defineProps({
+    ...colProps(),
+  });
 </script>
 
 <style>

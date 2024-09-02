@@ -8,7 +8,7 @@ export type DataFetch = {
 export function useFetch(
   fetch: (model?: {}) => Promise<unknown>,
   model?: Ref | ComputedRef,
-  effectKeys?: string[],
+  effectKeys?: string[] | string,
 ) {
   const result = ref<any[]>([]);
   const loading = ref(false);
@@ -33,7 +33,6 @@ export function useFetch(
   async function getData(model: any) {
     try {
       loading.value = true;
-      // @ts-expect-error
       result.value = await fetch(model);
     } finally {
       loading.value = false;

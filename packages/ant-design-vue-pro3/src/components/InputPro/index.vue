@@ -2,7 +2,7 @@
   <Input
     ref="input"
     v-bind="omitProps"
-    :value="value"
+    :value="innerValue"
     :disabled="innerDisabled"
     @update:value="updateValueHandler"
   >
@@ -23,14 +23,32 @@
 
 <script setup lang="ts">
   import { ref, computed, watch, watchEffect, useAttrs, onMounted } from 'vue';
+  import inputProps from 'ant-design-vue/es/input/inputProps.js';
   import { Input } from 'ant-design-vue';
-  import type { InputPro } from '.';
   import { omit } from '../../tools/tool';
   import { useValue } from '../../hooks/value';
   defineOptions({
     name: 'InputPro',
   });
-  const props = withDefaults(defineProps<InputPro>(), {
+  const props = defineProps({
+    ...inputProps(),
+    // data bind
+    model: Object,
+    prop: String,
+    // value convert
+    beforeValue: {
+      type: Function,
+      default: (v) => v,
+    },
+    afterChange: {
+      type: Function,
+      default: (v) => v,
+    },
+    // addon custom
+    addonBeforeClick: Function,
+    addonAfterClick: Function,
+  });
+  const d = {
     bordered: true,
     placeholder: '请输入',
     beforeValue: (v: any) => v,
@@ -38,14 +56,13 @@
     type: 'text',
     size: 'middle',
     autocomplete: 'off',
-  });
-  console.log('input prop props', props);
+  };
   const omitProps = computed(() =>
-    omit(props, 'onUpdate:value', 'beforeValue', 'afterChange', 'model'),
+    omit(props, 'onUpdate:value', 'beforeValue', 'afterChange', 'model', 'prop'),
   );
   const innerDisabled = computed(() => props.disabled ?? props.readonly);
   const { valueGetter, valueSetter } = useValue(props.prop);
-  const value = computed(() =>
+  const innerValue = computed(() =>
     props.beforeValue(props.value ?? (props.model && valueGetter(props.model))),
   );
   const emit = defineEmits<{
@@ -78,6 +95,6 @@
   });
 </script>
 
-<style>
+<style lang="scss">
   @import './index.scss';
 </style>

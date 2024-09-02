@@ -1,25 +1,27 @@
 <template>
   <div class="pagination-pro-wrapper">
-    <AntPagination v-bind="{ ...$attrs, ...props }"> <slot></slot> </AntPagination>
+    <AntPagination v-bind="merge(props, defaultProps)"> <slot></slot> </AntPagination>
   </div>
 </template>
 
 <script setup lang="ts">
-  import type { PaginationPro } from '.';
   import { Pagination as AntPagination } from 'ant-design-vue';
+  import { paginationProps } from 'ant-design-vue/es/pagination/index.js';
+  import { merge } from 'lodash';
 
   defineOptions({
     name: 'PaginationPro',
     inheritAttrs: true,
   });
 
-  const props = withDefaults(defineProps<PaginationPro>(), {
+  const props = defineProps({ ...paginationProps() });
+  const defaultProps = {
     showSizeChanger: true,
-    pageSizeOptions: () => ['10', '20', '30', '50', '70', '100'],
+    pageSizeOptions: ['10', '20', '30', '50', '70', '100'],
     showTotal: (total: number) => `共 ${total} 条`,
-  });
+  };
 </script>
 
-<style>
+<style lang="scss">
   @import './index.scss';
 </style>

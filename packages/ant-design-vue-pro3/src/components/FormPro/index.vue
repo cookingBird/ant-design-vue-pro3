@@ -2,7 +2,7 @@
   <ant-form
     ref="form"
     class="form-pro"
-    v-bind="formProps"
+    v-bind="omitProps"
     :model="model"
     :data-style="styled"
   >
@@ -56,10 +56,11 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed } from 'vue';
-  import { Form as AntForm } from 'ant-design-vue';
+  import { ref, computed, type PropType } from 'vue';
+  import { Form as AntForm, type FormProps, type RowProps } from 'ant-design-vue';
+  import { formProps } from 'ant-design-vue/es/form/Form.js';
   import { omit } from '../../tools/tool';
-  import type { FormProProps, FormItemProOptions } from '.';
+  import type { FormItemProOptions } from '.';
   import { callValue } from '../../tools/visible';
   import TypeNode from '../TypeNode/index.vue';
   import RowPro from '../GridPro/RowPro.vue';
@@ -69,17 +70,22 @@
     name: 'AFormPro',
     inheritAttrs: true,
   });
-  const props = withDefaults(defineProps<FormProProps>(), {
-    styled: 'default',
-    labelAlign: 'right',
-    // @ts-expect-error
-    labelCol: { style: 'width:110px' },
-    colon: true,
-    autocomplete: 'off',
+  const props = defineProps({
+    ...formProps(),
+    styled: {
+      type: String as PropType<'default' | 'transparent'>,
+      default: 'default',
+    },
+    options: Object as PropType<FormProps & { row: RowProps; columns: any[] }>,
+    columns: Array as PropType<any[]>,
   });
+  const defaultProps = {
+    labelCol: { style: 'width:110px' },
+    autocomplete: 'off',
+  };
 
-  const formProps = computed(() =>
-    omit({ ...props, ...props.options }, 'columns', 'row', 'options'),
+  const omitProps = computed(() =>
+    omit({ ...props, ...defaultProps, ...props.options }, 'columns', 'row', 'options'),
   );
 
   function _buildName(options: FormItemProOptions) {
@@ -126,6 +132,6 @@
   });
 </script>
 
-<style>
+<style lang="scss">
   @import './index.scss';
 </style>

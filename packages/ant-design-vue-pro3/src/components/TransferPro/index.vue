@@ -6,6 +6,7 @@
     :targetKeys="targetKeys"
     class="transfer-pro"
     @update:targetKeys="updateValueHandler"
+    @change="hanldeChange"
   >
     <template v-if="$slots.children" #children="slotProps">
       <slot name="children" v-bind="slotProps"> </slot>
@@ -13,7 +14,7 @@
     <template #render="item">
       <div class="ant-transfer-list-content-item-text__item" :data-key="item.key">
         <div class="content">
-          <slot name="render" v-bind="item"> {{ props.render(item) }} </slot>
+          <slot name="render" v-bind="item"> {{ props.render ? props.render(item):item.title }} </slot>
         </div>
         <span class="handle">
           <Handle />
@@ -24,9 +25,9 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, watchEffect, onMounted, nextTick } from 'vue';
+  import { ref, computed, watchEffect, type PropType, nextTick,watch } from 'vue';
   import { Transfer as AntTransfer } from 'ant-design-vue';
-  import { type TransferPropsPro } from '.';
+  import { transferProps } from 'ant-design-vue/es/transfer';
   import { useFetch } from '../../hooks/fetch';
   import { omit } from '../../tools/tool';
   import { useValue } from '../../hooks/value';
@@ -35,9 +36,36 @@
   defineOptions({
     name: 'TransferPro',
   });
-  const props = withDefaults(defineProps<TransferPropsPro>(), {
-    beforeValue: (v: any) => v,
-    afterChange: (v: any) => v,
+  const props = defineProps({
+    ...transferProps(),
+    sortable: {
+      type: Object,
+      default: () => ({
+        left: false,
+        right: true,
+      }),
+    },
+    // effected remote data
+    effectKeys: [String, Array],
+    fetch: Function as PropType<
+      (
+        model: any,
+      ) => Promise<{ label: string; value: string | number; [key: string]: any }[]>
+    >,
+    // data bind
+    model: Object,
+    prop: String,
+    // value convert
+    beforeValue: {
+      type: Function,
+      default: (v) => v,
+    },
+    afterChange: {
+      type: Function,
+      default: (v) => v,
+    },
+  });
+  const d = {
     render: () => (item: any) => item.title,
     showSelectAll: true,
     locale: () => ({
@@ -53,12 +81,8 @@
       removeAll: '取消全选',
       removeCurrent: '取消当页全选',
     }),
-    sortable: () => ({
-      left: false,
-      right: false,
-    }),
-  });
-  const transfer = ref(null);
+  };
+  const transfer = ref<InstanceType<typeof AntTransfer>>();
   const omitProps = computed(() =>
     omit(
       props,
@@ -72,19 +96,30 @@
       'render',
     ),
   );
-  const fetchDataSource = ref([]);
+  const fetchDataSource = ref<any[]>([]);
   if (props.fetch) {
     const { result } = useFetch(
       props.fetch,
       computed(() => props.model),
-      props.effectKeys,
+      props.effectKeys as string[],
     );
     watchEffect(() => {
       fetchDataSource.value = result.value;
     });
   }
-  const innerDataSource = computed(() => props.dataSource ?? fetchDataSource.value);
+  const innerDataSource = ref([]);
+  watch([()=>props.dataSource,()=>fetchDataSource.value],(v)=>{
+    const [pS,fS] = v;
+    if(pS.length){
+      // @ts-expect-error
+      innerDataSource.value = pS;
+    }else if(fS.length){
+      // @ts-expect-error
+      innerDataSource.value = fS;
+    }
+  })
   watchEffect(() => {
+    console.log('transfer innerDataSource',innerDataSource.value)
     if (innerDataSource.value.length) {
       nextTick(initSearch);
     }
@@ -135,6 +170,10 @@
     }
   }
 
+  const hanldeChange = () => {
+    nextTick(initSearch);
+  };
+
   // bind model
   const { valueGetter, valueSetter } = useValue(props.prop);
   const targetKeys = computed(() =>
@@ -150,6 +189,6 @@
   };
 </script>
 
-<style>
+<style lang="scss">
   @import './index.scss';
 </style>

@@ -1,7 +1,10 @@
 {
   "compilerOptions": {
     "skipLibCheck": true,
-    "baseUrl": "."
+    "baseUrl": "./",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"]
   },
-  "exclude": ["node_modules"]
+  "include": ["./scr/**/*.ts", "./scr/**/*.d.ts", "./scr/**/*.vue"]
 }

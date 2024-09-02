@@ -2,7 +2,7 @@
   <div ref="tableRefWrapper" class="table-pro-wrapper" :data-style="styled">
     <ant-table
       ref="tableRef"
-      v-bind="props"
+      v-bind="mergedProps"
       :class="autoFitHeight ? 'table-pro--autoHeight' : ''"
       :columns="withDefaultCols"
     >
@@ -39,29 +39,37 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, computed } from 'vue';
+  import { ref, computed, type PropType } from 'vue';
   import { Table as AntTable } from 'ant-design-vue';
   import TypeNodeVue from '../TypeNode/index.vue';
-  import type { TablePro } from '.';
+  import { tableProps } from 'ant-design-vue/es/table/index.js';
+  import { merge } from 'lodash';
   defineOptions({
     name: 'TablePro',
     inheritAttrs: true,
   });
 
-  const props = withDefaults(defineProps<TablePro>(), {
+  const props = defineProps({
+    ...tableProps(),
+    styled: {
+      type: String as PropType<'default' | 'transparent'>,
+      default: 'default',
+    },
+    autoFitHeight: {
+      type: Boolean,
+      default: true,
+    },
+  });
+  const defaultProps = {
     bordered: true,
     sticky: true,
     showHeader: true,
-    autoFitHeight: true,
-    styled: 'default',
-  });
+  };
+
+  const mergedProps = computed(() => merge(props, defaultProps));
 
   const tableRefWrapper = ref<HTMLDivElement | null>(null);
-  // const scroll = ref<{
-  //   scrollToFirstRowOnChange?: boolean;
-  //   x?: number;
-  //   y?: number;
-  // }>({});
+
   const withDefaultCols = computed(
     () =>
       props.columns?.map((col) => ({
@@ -77,6 +85,6 @@
   });
 </script>
 
-<style lang="css">
+<style lang="scss">
   @import './index.scss';
 </style>

@@ -1,8 +1,10 @@
 {
-  "name": "ant-design-vue-pro3",
+  "name": "@dt/ant-design-vue-pro3",
   "version": "1.0.0",
   "description": "",
-  "main": "./src/index.ts",
+  "main": "src/index.js",
+  "typings": "src/index.d.ts",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,17 +12,20 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/lodash": "^4.17.7",
     "@vue/compiler-dom": "3.4.36",
     "autoprefixer": "10.4.20",
     "postcss": "8.4.41",
-    "tailwindcss": "3.4.7"
+    "tailwindcss": "3.4.7",
+    "vue": "3.4.34",
+    "vue-router": "4.4.3",
+    "ant-design-vue": "^3.2.20",
+    "@ant-design/icons-vue": "^7.0.1"
   },
   "dependencies": {
-    "@ant-design/icons-vue": "^7.0.1",
     "@vueuse/core": "^10.11.0",
-    "ant-design-vue": "^3.2.20",
     "draggable-resizable-vue3": "1.0.94-beta",
-    "vue": "^3.4.34",
+    "lodash": "4.17.21",
     "sortablejs": "1.15.2"
   }
 }

@@ -14,7 +14,6 @@ export type EffectOps = {
 export function useEffect(model: Ref | ComputedRef, options: EffectOps) {
   let effectCb: (() => void) | undefined = options.onEffect;
   const { effectKeys, immediate, debounce } = options;
-  console.log('useEffect', options, model);
   const stop = watchDebounced(
     toArray<string>(effectKeys).map((key) => () => unref(model)[key]),
     () => {

@@ -1,5 +1,5 @@
 <template>
-  <a-tabs
+  <Tabs
     v-bind="omitProps"
     class="tabs-pro"
     :data-height="props.height"
@@ -7,30 +7,39 @@
     @update:active-key="onUpdateActiveKey"
   >
     <template v-for="pane in panes" :key="pane.key ?? pane.tab">
-      <a-tab-pane v-bind="omitComponent(pane)">
+      <TabPane v-bind="omitComponent(pane)">
         <component :is="pane.component"></component>
-      </a-tab-pane>
+      </TabPane>
     </template>
-  </a-tabs>
+  </Tabs>
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, watch, watchEffect, useAttrs, onMounted } from 'vue';
-  import type { TabsPro } from '.';
+  import { ref, computed, watch, type PropType } from 'vue';
+  import { Tabs, TabPane, type TabPaneProps } from 'ant-design-vue';
   import useQueryStorage from '../../hooks/routerPersistence';
   import { omit } from '../../tools/tool';
-  const props = withDefaults(defineProps<TabsPro>(), {
-    size: 'large',
-    height: 'full',
-    useRoute: true,
+  import { tabsProps } from 'ant-design-vue/es/tabs/src/Tabs';
+  import { merge } from 'lodash';
+  const props = defineProps({
+    ...tabsProps(),
+    height: { type: String, default: 'full' },
+    useRoute: { type: Boolean, default: true },
+    panes: Array as PropType<TabPaneProps & { key: string; component: any }[]>,
   });
-  const omitProps = computed(() => omit(props, 'panes', 'onUpdate:activeKey'));
+  const defaultProps = {
+    size: 'large',
+  };
+  const omitProps = computed(() =>
+    omit(merge(defaultProps, props), 'panes', 'onUpdate:activeKey'),
+  );
+  console.log('tabs omitProps', omitProps);
   const emit = defineEmits<{
     'update:activeKey': [val: string | number];
   }>();
   const { value: activeTabKeyValue } = useQueryStorage(
     'activeTabKey',
-    () => props.activeKey ?? props.panes[0]?.key,
+    () => props.activeKey ?? props.panes![0]?.key,
   );
   function onUpdateActiveKey(val: string | number) {
     emit('update:activeKey', val);
@@ -67,6 +76,6 @@
   }
 </script>
 
-<style>
+<style lang="scss">
   @import './index.scss';
 </style>

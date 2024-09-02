@@ -25,18 +25,31 @@
 <script setup lang="ts">
   import { ref, computed, watch, watchEffect, useAttrs, onMounted } from 'vue';
   import { InputNumber } from 'ant-design-vue';
-  import type { InputNumberPro } from '.';
+  import { inputNumberProps } from 'ant-design-vue/es/input-number/index.js';
   import { omit } from '../../tools/tool';
   import { useValue } from '../../hooks/value';
   defineOptions({
     name: 'InputNumberPro',
   });
-  const props = withDefaults(defineProps<InputNumberPro>(), {
-    bordered: true,
-    placeholder: '请输入',
-    beforeValue: (v: any) => v,
-    afterChange: (v: any) => v,
+  const props = defineProps({
+    ...inputNumberProps(),
+    // type converter
+    beforeValue: {
+      type: Function,
+      default: () => (v) => v,
+    },
+    afterChange: {
+      type: Function,
+      default: () => (v) => v,
+    },
+    // data bind
+    prop: String,
+    model: Object,
+    // addon custom
+    addonBeforeClick: Function,
+    addonAfterClick: Function,
   });
+
   const omitProps = computed(() =>
     omit(props, 'onUpdate:value', 'beforeValue', 'afterChange'),
   );

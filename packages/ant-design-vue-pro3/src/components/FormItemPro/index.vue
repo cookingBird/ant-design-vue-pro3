@@ -5,17 +5,10 @@
 </template>
 
 <script setup lang="ts">
-  import type { FormItemProProps } from '.';
   import { FormItem as AntFormItem } from 'ant-design-vue';
-  const props = withDefaults(defineProps<FormItemProProps>(), {
-    autoLink: true,
-    colon: undefined,
-    hasFeedback: false,
-    labelAlign: undefined,
-    labelCol: undefined,
-    required: false,
-    validateFirst: false,
-    validateTrigger: 'change',
+  import { formItemProps } from 'ant-design-vue/es/form/FormItem.js';
+  const props = defineProps({
+    ...formItemProps(),
   });
 </script>
 

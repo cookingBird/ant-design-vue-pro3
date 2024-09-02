@@ -1,42 +1,59 @@
 <template>
-  <AntModal
-    v-bind="omitProps"
-    v-model:visible="visible"
-    class="modal-pro"
-    :class="`modal-pro--${styled}`"
-    :confirmLoading="loading"
-    @ok="handleOk"
-    @cancel="handleCancel"
-  >
-    <template v-if="$slots.title" #title>
-      <slot name="title"> </slot>
-    </template>
-    <template v-if="$slots.default" #default>
-      <slot name="default"> </slot>
-    </template>
-    <template v-if="$slots.footer" #footer>
-      <slot name="footer"> </slot>
-    </template>
-  </AntModal>
+  <LocaleProvider :locale="props.locale">
+    <AntModal
+      v-bind="omitProps"
+      v-model:visible="visible"
+      class="modal-pro"
+      :style="props.style"
+      :class="`modal-pro--${styled} ${props.class}`"
+      :confirmLoading="loading"
+      @ok="handleOk"
+      @cancel="handleCancel"
+    >
+      <template v-if="$slots.title" #title>
+        <slot name="title"> </slot>
+      </template>
+      <template v-if="$slots.default" #default>
+        <slot name="default"> </slot>
+      </template>
+      <template v-if="$slots.footer" #footer>
+        <slot name="footer"> </slot>
+      </template>
+    </AntModal>
+  </LocaleProvider>
 </template>
 
 <script lang="ts" setup>
-  import { ref, computed, watch, watchEffect, useAttrs, onMounted } from 'vue';
-  import { Modal as AntModal } from 'ant-design-vue';
-  import type { ModalPro } from '.';
+  import { ref, computed, watch, watchEffect, useAttrs, type PropType } from 'vue';
+  import zhCN from 'ant-design-vue/es/locale/zh_CN';
+  import { Modal as AntModal, LocaleProvider } from 'ant-design-vue';
+  import { type Locale } from 'ant-design-vue/es/locale-provider';
+  import { modalProps } from 'ant-design-vue/es/modal/Modal.js';
   import { omit } from '../../tools/tool';
   import useLoading from '../../hooks/loading';
+  import { merge } from 'lodash';
   const attrs = useAttrs();
-  const props = withDefaults(defineProps<ModalPro>(), {
+  const props = defineProps({
+    ...modalProps(),
+    styled: {
+      type: String as PropType<'default' | 'transparent'>,
+      default: 'default',
+    },
+    locale: {
+      type: Object as PropType<Locale>,
+      default: () => zhCN,
+    },
+    class: String,
+    style: String,
+    onOk: {
+      type: Function as PropType<(done: () => void) => void>,
+    },
+  });
+  const defaultProps = {
     closable: true,
     destroyOnClose: true,
-    styled: 'default',
-    okText: '确认',
-    cancelText: '取消',
-    visible: undefined,
     mask: true,
-  });
-  console.log('modal pro props', props);
+  };
   const emit = defineEmits<{
     'ok': [done: () => void];
     'update:visible': [v: boolean];
@@ -54,7 +71,13 @@
   });
   const { loading, done } = useLoading();
   const omitProps = computed(() =>
-    omit(props, 'cancelButtonProps', 'onOk', 'onUpdate:visible', 'onCancel'),
+    omit(
+      merge(props, defaultProps),
+      'cancelButtonProps',
+      'onOk',
+      'onUpdate:visible',
+      'onCancel',
+    ),
   );
   function handleOk() {
     loading.value = true;

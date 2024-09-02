@@ -10,32 +10,60 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, computed, watchEffect } from 'vue';
+  import { ref, computed, watchEffect, type PropType } from 'vue';
   import { Select as AntSelect } from 'ant-design-vue';
-  import type { SelectOption, SelectPro } from '.';
+  import { selectProps } from 'ant-design-vue/es/select';
+  import type { SelectOption } from '.';
   import { useFetch } from '../../hooks/fetch';
   import { useValue } from '../../hooks/value';
   import { callFunction, omit } from '../../tools/tool';
+  import { merge } from 'lodash';
 
-  const props = withDefaults(defineProps<SelectPro>(), {
-    beforeValue: (v: any) => v,
-    afterChange: (v: any) => v,
-    bordered: true,
-    showArrow: true,
+  const props = defineProps({
+    ...selectProps(),
+    // effected remote data
+    effectKeys: String,
+    fetch: Function as PropType<
+      (
+        model: any,
+      ) => Promise<{ label: string; value: string | number; [key: string]: any }[]>
+    >,
+    // data bind
+    model: Object,
+    prop: String,
+    // value convert
+    beforeValue: {
+      type: Function,
+      default: (v) => v,
+    },
+    afterChange: {
+      type: Function,
+      default: (v) => v,
+    },
+  });
+  const defaultOps = {
     placeholder: '请选择',
     mode: undefined,
     allowClear: true,
     maxTagCount: 'responsive',
     showSearch: false,
-    filterOption: () => (input: string, option: any) => {
+    filterOption: (input: string, option: any) => {
       return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     },
-  });
-  console.log('select props', props);
+  };
 
   const omitProps = computed(() =>
-    omit(props, 'model', 'fetch', 'open', 'onUpdate:value', 'beforeValue', 'afterChange'),
+    omit(
+      merge(defaultOps, props),
+      'model',
+      'fetch',
+      'open',
+      'onUpdate:value',
+      'beforeValue',
+      'afterChange',
+    ),
   );
+  console.log('select omitProps', omitProps.value);
   // fetch data
   const fetchOps = ref<SelectOption[]>([]);
   const builtOptions = computed(

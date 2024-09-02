@@ -13,7 +13,7 @@
     </input-pro>
     <AntTree
       ref="treeRef"
-      v-bind="treeProps"
+      v-bind="treePropsOmitted"
       :expandedKeys="wrapperInnerExpandedKeys"
       :treeData="innerData"
       :onDrop="onDrop"
@@ -38,6 +38,7 @@
   import { SearchOutlined } from '@ant-design/icons-vue';
   import getTreeTravel from '../../tools/getTreeTravel';
   import findSelfList from '../../tools/findSelfList';
+  import { treeProps } from 'ant-design-vue/es/tree/Tree.js';
   import type {
     AntTreeNodeDropEvent,
     TreeProps,
@@ -52,21 +53,39 @@
 
   const treeRef = ref<typeof AntTree | null>(null);
   const attrs = useAttrs();
-  const props = withDefaults(defineProps<TreePro>(), {
+  const props = defineProps({
+    ...treeProps(),
+    searchValue: String,
+    searchOptions: Object,
+    size: {
+      type: String,
+      default: 'small',
+    },
+    showSearcher: {
+      type: Boolean,
+      default: false,
+    },
+    name: String,
+    draggable: {
+      type: Boolean,
+      default: false,
+    },
+  });
+  const d = {
     size: 'small',
     showSearcher: false,
     selectable: false,
     blockNode: true,
     draggable: false,
-  });
+  };
   const emit = defineEmits<{
     'update:searchValue': [val: string];
     'click': [ev: MouseEvent, data: any];
     'rightClick': [ev: MouseEvent, data: any];
     'drop': [info: AntTreeNodeDropEvent, changeList: unknown[]];
   }>();
-  const treeProps = computed(() =>
-    omit({ ...attrs, ...props }, 'searchValue', 'searchOptions', 'size', 'onDrop'),
+  const treePropsOmitted = computed(() =>
+    omit({ ...attrs, ...d, ...props }, 'searchValue', 'searchOptions', 'size', 'onDrop'),
   );
   const inputProps = computed(() => pick(props, 'searchOptions', 'searchValue'));
   const modelValueHandler = (val: string) => {

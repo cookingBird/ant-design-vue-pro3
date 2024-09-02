@@ -56,12 +56,12 @@
       border-bottom: 0px;
     }
     .ant-table-placeholder > .ant-table-cell {
-      &:hover {
-        background-color: transparent;
-      }
       background-color: transparent;
       border-bottom: 0px;
       color: #555;
+      &:hover {
+        background-color: transparent;
+      }
     }
 
     .ant-table-cell-scrollbar {

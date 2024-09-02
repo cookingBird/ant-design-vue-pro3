@@ -9,20 +9,32 @@
 <script setup lang="ts">
   import { computed } from 'vue';
   import { Switch as AntSwitch } from 'ant-design-vue';
-  import type { SwitchPro } from '.';
+  import { switchProps } from 'ant-design-vue/es/switch';
   import { omit } from '../../tools/tool';
   import { useValue } from '../../hooks/value';
   defineOptions({
     name: 'SwitchPro',
   });
-  const props = withDefaults(defineProps<SwitchPro>(), {
+  const props = defineProps({
+    ...switchProps(),
+    beforeValue: {
+      tyep: Function,
+      default: () => (v) => v,
+    },
+    afterChange: {
+      tyep: Function,
+      default: () => (v) => v,
+    },
+    prop: String,
+    model: Object,
+  });
+  const defaultProps = {
     bordered: true,
     placeholder: '请输入',
-    beforeValue: (v: any) => v,
-    afterChange: (v: any) => v,
     checkedValue: 1,
     unCheckedValue: 0,
-  });
+  };
+
   const omitProps = computed(() =>
     omit(props, 'onUpdate:checked', 'beforeValue', 'afterChange'),
   );
