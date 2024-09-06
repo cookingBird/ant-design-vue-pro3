@@ -1,6 +1,6 @@
 <template>
   <div class="pagination-pro-wrapper">
-    <AntPagination v-bind="merge(props, defaultProps)"> <slot></slot> </AntPagination>
+    <AntPagination v-bind="merge(defaultProps, props)"> <slot></slot> </AntPagination>
   </div>
 </template>
 

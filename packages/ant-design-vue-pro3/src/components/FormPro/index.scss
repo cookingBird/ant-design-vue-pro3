@@ -8,4 +8,10 @@
       background-color: transparent;
     }
   }
+  &[data-validation='false'] .ant-form-item {
+    margin-bottom: 8px;
+  }
+  & .ant-form-item:has(div[prop='action'][wrapper]) {
+    margin-bottom: 0px;
+  }
 }

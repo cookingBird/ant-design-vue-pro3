@@ -14,7 +14,9 @@
     <template #render="item">
       <div class="ant-transfer-list-content-item-text__item" :data-key="item.key">
         <div class="content">
-          <slot name="render" v-bind="item"> {{ props.render ? props.render(item):item.title }} </slot>
+          <slot name="render" v-bind="item">
+            {{ props.render ? props.render(item) : item.title }}
+          </slot>
         </div>
         <span class="handle">
           <Handle />
@@ -25,14 +27,14 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, watchEffect, type PropType, nextTick,watch } from 'vue';
+  import { ref, computed, watchEffect, type PropType, nextTick, watch } from 'vue';
   import { Transfer as AntTransfer } from 'ant-design-vue';
   import { transferProps } from 'ant-design-vue/es/transfer';
   import { useFetch } from '../../hooks/fetch';
-  import { omit } from '../../tools/tool';
   import { useValue } from '../../hooks/value';
   import Handle from './Handle.vue';
   import Sortable from 'sortablejs';
+  import { merge, omit } from 'lodash';
   defineOptions({
     name: 'TransferPro',
   });
@@ -65,27 +67,16 @@
       default: (v) => v,
     },
   });
-  const d = {
-    render: () => (item: any) => item.title,
+  const defaultProps = {
     showSelectAll: true,
-    locale: () => ({
-      titles: [],
-      notFoundContent: '列表为空',
-      searchPlaceholder: '请输入搜索内容',
-      itemUnit: '项',
-      itemsUnit: '项',
-      remove: '移除',
-      selectAll: '全选所有',
-      selectCurrent: '全选当页',
-      selectInvert: '反选当页',
-      removeAll: '取消全选',
-      removeCurrent: '取消当页全选',
-    }),
+    filterOption: (inputValue: string, option: any) => {
+      return option.title.indexOf(inputValue) > -1;
+    },
   };
   const transfer = ref<InstanceType<typeof AntTransfer>>();
   const omitProps = computed(() =>
     omit(
-      props,
+      merge(defaultProps, props),
       'model',
       'fetch',
       'beforeValue',
@@ -108,18 +99,18 @@
     });
   }
   const innerDataSource = ref([]);
-  watch([()=>props.dataSource,()=>fetchDataSource.value],(v)=>{
-    const [pS,fS] = v;
-    if(pS.length){
+  watch([() => props.dataSource, () => fetchDataSource.value], (v) => {
+    const [pS, fS] = v;
+    if (pS.length) {
       // @ts-expect-error
       innerDataSource.value = pS;
-    }else if(fS.length){
+    } else if (fS.length) {
       // @ts-expect-error
       innerDataSource.value = fS;
     }
-  })
+  });
   watchEffect(() => {
-    console.log('transfer innerDataSource',innerDataSource.value)
+    console.log('transfer innerDataSource', innerDataSource.value);
     if (innerDataSource.value.length) {
       nextTick(initSearch);
     }

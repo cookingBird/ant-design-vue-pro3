@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, computed, watch, watchEffect, useAttrs, type PropType } from 'vue';
+  import { ref, computed, useAttrs, type PropType } from 'vue';
   import zhCN from 'ant-design-vue/es/locale/zh_CN';
   import { Modal as AntModal, LocaleProvider } from 'ant-design-vue';
   import { type Locale } from 'ant-design-vue/es/locale-provider';
@@ -32,6 +32,9 @@
   import { omit } from '../../tools/tool';
   import useLoading from '../../hooks/loading';
   import { merge } from 'lodash';
+  defineOptions({
+    inheritAttrs: false,
+  });
   const attrs = useAttrs();
   const props = defineProps({
     ...modalProps(),
@@ -53,6 +56,7 @@
     closable: true,
     destroyOnClose: true,
     mask: true,
+    title: '弹窗默认标题',
   };
   const emit = defineEmits<{
     'ok': [done: () => void];
@@ -60,7 +64,7 @@
     'cancel': [];
   }>();
   const innerVisible = ref(true);
-  const visible = computed({
+  const visible = computed<boolean>({
     get() {
       return props.visible ?? innerVisible.value;
     },
@@ -72,7 +76,7 @@
   const { loading, done } = useLoading();
   const omitProps = computed(() =>
     omit(
-      merge(props, defaultProps),
+      merge(defaultProps, props),
       'cancelButtonProps',
       'onOk',
       'onUpdate:visible',

@@ -27,6 +27,7 @@
   import { Input } from 'ant-design-vue';
   import { omit } from '../../tools/tool';
   import { useValue } from '../../hooks/value';
+  import { merge } from 'lodash';
   defineOptions({
     name: 'InputPro',
   });
@@ -48,17 +49,22 @@
     addonBeforeClick: Function,
     addonAfterClick: Function,
   });
-  const d = {
-    bordered: true,
+  const defaultProps = {
     placeholder: '请输入',
     beforeValue: (v: any) => v,
     afterChange: (v: any) => v,
-    type: 'text',
     size: 'middle',
     autocomplete: 'off',
   };
   const omitProps = computed(() =>
-    omit(props, 'onUpdate:value', 'beforeValue', 'afterChange', 'model', 'prop'),
+    omit(
+      merge(defaultProps, props),
+      'onUpdate:value',
+      'beforeValue',
+      'afterChange',
+      'model',
+      'prop',
+    ),
   );
   const innerDisabled = computed(() => props.disabled ?? props.readonly);
   const { valueGetter, valueSetter } = useValue(props.prop);

@@ -14,11 +14,11 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, watch, watchEffect, type PropType } from 'vue';
+  import { computed, type PropType } from 'vue';
   import { Button, Popconfirm, type PopconfirmProps } from 'ant-design-vue';
   import useLoading from '../../hooks/loading';
   import { omit } from '../../tools/tool';
-  import { buttonProps } from 'ant-design-vue/es/button/button.js';
+  import { buttonProps } from 'ant-design-vue/es/button/button';
 
   const { loading, done } = useLoading();
 
@@ -32,17 +32,14 @@
     model: Object,
     active: Boolean,
     label: String,
-    confirm: {
-      type: Object as PropType<PopconfirmProps>,
-    },
+    confirm: Object as PropType<PopconfirmProps>,
+    onClick: Function as PropType<(done: () => void, model?: any) => void>,
   });
-  console.log('buttonPro props', props);
 
   // omit passive onClick event
   const omitProps = computed(() => omit(props, 'onClick', 'model', 'confirm'));
   function clickHandler() {
     loading.value = true;
-    // @ts-expect-error
     props.onClick?.(done, props.model);
   }
 </script>

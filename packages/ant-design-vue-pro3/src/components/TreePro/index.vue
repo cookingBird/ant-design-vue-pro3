@@ -33,7 +33,6 @@
   import { ref, computed, watch, watchEffect, useAttrs, onBeforeUnmount } from 'vue';
   import InputPro from '../InputPro/index.vue';
   import { Tree as AntTree } from 'ant-design-vue';
-  import type { TreePro } from '.';
   import { omit, pick } from '../../tools/tool';
   import { SearchOutlined } from '@ant-design/icons-vue';
   import getTreeTravel from '../../tools/getTreeTravel';
@@ -70,12 +69,15 @@
       type: Boolean,
       default: false,
     },
+    blockNode: {
+      type: Boolean,
+      default: true,
+    },
   });
   const d = {
     size: 'small',
     showSearcher: false,
     selectable: false,
-    blockNode: true,
     draggable: false,
   };
   const emit = defineEmits<{

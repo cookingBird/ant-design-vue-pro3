@@ -5,6 +5,7 @@
     v-bind="omitProps"
     :model="model"
     :data-style="styled"
+    :data-validation="validation"
   >
     <row-pro v-if="options.row" v-bind="options.row" :gutter="options.row.gutter ?? 12">
       <template v-for="(item, index) in options.columns" :key="index">
@@ -78,6 +79,10 @@
     },
     options: Object as PropType<FormProps & { row: RowProps; columns: any[] }>,
     columns: Array as PropType<any[]>,
+    validation: {
+      type: Boolean,
+      default: true,
+    },
   });
   const defaultProps = {
     labelCol: { style: 'width:110px' },
