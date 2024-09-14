@@ -83,7 +83,6 @@
         props.scroll.scrollToFirstRowOnChange ??
         innerScroll.value.scrollToFirstRowOnChange;
     }
-    console.log('columns', columns);
     innerScroll.value.x =
       columns
         ?.filter((item) => !item.fixed)
