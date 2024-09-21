@@ -9,6 +9,8 @@ import DateRangePickerPro from './components/DateRangePickerPro/index.vue';
 import ButtonGroupPro from './components/ButtonGroupPro/index.vue';
 import ModalPro from './components/ModalPro/index.vue';
 import TreePro from './components/TreePro/index.vue';
+import PopoverPro from './components/PopoverPro/index.vue';
+import { InputSearch } from 'ant-design-vue';
 export {
   ButtonPro,
   PDFPreviewer,
@@ -21,4 +23,6 @@ export {
   ButtonGroupPro,
   ModalPro,
   TreePro,
+  PopoverPro,
+  InputSearch
 };

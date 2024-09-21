@@ -18,7 +18,7 @@
   import { Button, Popconfirm, type PopconfirmProps } from 'ant-design-vue';
   import useLoading from '../../hooks/loading';
   import { omit } from '../../tools/tool';
-  import { buttonProps } from 'ant-design-vue/es/button/button';
+  import { buttonProps } from 'ant-design-vue/lib/button/button';
 
   const { loading, done } = useLoading();
 

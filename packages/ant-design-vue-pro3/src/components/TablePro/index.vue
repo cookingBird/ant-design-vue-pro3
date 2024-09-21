@@ -1,12 +1,12 @@
 <template>
-  <div ref="tableRefWrapper" class="table-pro-wrapper" :data-style="styled">
+  <div class="table-pro-wrapper" :data-style="styled">
     <ant-table
       ref="tableRef"
       v-bind="mergedProps"
       :class="autoFitHeight ? 'table-pro--autoHeight' : ''"
-      :columns="withDefaultCols"
+      :columns="props.columns"
       :dataSource="props.dataSource"
-      :scroll="innerScroll"
+      :scroll="scroll"
     >
       <!-- :scroll="scroll" -->
       <template #bodyCell="{ column, record, index }">
@@ -46,11 +46,11 @@
   import TypeNodeVue from '../TypeNode/index.vue';
   import { tableProps } from 'ant-design-vue/es/table/index.js';
   import { merge } from 'lodash';
+  import { useScrollY } from './hook';
   defineOptions({
     name: 'TablePro',
     inheritAttrs: true,
   });
-  const tableRefWrapper = ref<HTMLDivElement | null>(null);
 
   const props = defineProps({
     ...tableProps(),
@@ -69,39 +69,12 @@
   });
 
   const defaultProps = {};
-  const innerScroll = ref({
-    x: true as string | number | true,
-    y: null as any as string | number,
-    scrollToFirstRowOnChange: true,
-  });
-  watchEffect(() => {
-    const propsScroll = props.scroll;
-    const columns = props.columns;
-    if (propsScroll) {
-      innerScroll.value.y = props.scroll.y ?? innerScroll.value.y;
-      innerScroll.value.scrollToFirstRowOnChange =
-        props.scroll.scrollToFirstRowOnChange ??
-        innerScroll.value.scrollToFirstRowOnChange;
-    }
-    innerScroll.value.x =
-      columns
-        ?.filter((item) => !item.fixed)
-        .reduce<number>((pre, cur) => {
-          return pre + Number(cur.width || cur.minWidth || 80);
-        }, 0) || true;
-  });
 
   const mergedProps = computed(() => merge(defaultProps, props));
 
-  const withDefaultCols = computed(
-    () =>
-      props.columns?.map((col) => ({
-        ...col,
-        align: col.align ?? 'center',
-      })) || [],
-  );
-
-  const tableRef = ref<typeof AntTable | null>(null);
+  const tableRef = ref<typeof AntTable | null>();
+  // @ts-expect-error
+  const scroll = props.autoFitHeight ? useScrollY(tableRef) : ref({});
 
   defineExpose({
     tableRef,

@@ -2,31 +2,23 @@
 @import '../../style/tool.scss';
 
 .table-pro-wrapper {
-  // >>>>>>>>>> auto height scrool
   &:has(.table-pro--autoHeight) {
     height: 100%;
   }
-  .table-pro--autoHeight {
+  .ant-table-wrapper.table-pro--autoHeight,
+  .ant-spin-nested-loading,
+  .ant-spin-container,
+  .ant-table,
+  .ant-table-container {
     height: 100%;
-    .ant-table,
-    .ant-spin-nested-loading,
-    .ant-spin-container,
-    .ant-table-container {
-      height: 100%;
-    }
-    .ant-spin-container {
-      overflow: hidden;
-    }
-    .ant-table-container {
-      overflow-y: auto;
-    }
+    overflow: hidden;
   }
+
   // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   @include style-selector('transparent') {
     --table-bg: transparent;
     --table-header-bg: transparent;
-    --table-text-color: #555;
-    --table-row-hover-bg: rgba(18, 83, 133, 0.6);
+    --table-text-color: #fff;
     .ant-table {
       --text-color: var(--table-text-color);
       --table-header-color: var(--text-color);

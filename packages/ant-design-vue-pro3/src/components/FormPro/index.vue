@@ -59,7 +59,7 @@
 <script setup lang="ts">
   import { ref, computed, type PropType } from 'vue';
   import { Form as AntForm, type FormProps, type RowProps } from 'ant-design-vue';
-  import { formProps } from 'ant-design-vue/es/form/Form.js';
+  import { formProps } from 'ant-design-vue/es/form/Form';
   import { omit } from '../../tools/tool';
   import type { FormItemProOptions } from '.';
   import { callValue } from '../../tools/visible';

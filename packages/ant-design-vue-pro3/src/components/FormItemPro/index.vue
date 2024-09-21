@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
   import { FormItem as AntFormItem } from 'ant-design-vue';
-  import { formItemProps } from 'ant-design-vue/es/form/FormItem.js';
+  import { formItemProps } from 'ant-design-vue/es/form/FormItem';
   const props = defineProps({
     ...formItemProps(),
   });

@@ -19,7 +19,16 @@
           </slot>
         </div>
         <span class="handle">
-          <Handle />
+          <Handle v-if="props.sortable.type === 'drag'" />
+          <template v-else>
+            <ArrowUpOutlined
+              class="icon"
+              @click.stop="(e) => handleMove('up', e)"
+            /><ArrowDownOutlined
+              class="icon"
+              @click.stop="(e) => handleMove('down', e)"
+            />
+          </template>
         </span>
       </div>
     </template>
@@ -35,6 +44,7 @@
   import Handle from './Handle.vue';
   import Sortable from 'sortablejs';
   import { merge, omit } from 'lodash';
+  import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons-vue';
   defineOptions({
     name: 'TransferPro',
   });
@@ -45,6 +55,7 @@
       default: () => ({
         left: false,
         right: true,
+        type: 'btn', // 'btn'| 'drag'
       }),
     },
     // effected remote data
@@ -102,15 +113,12 @@
   watch([() => props.dataSource, () => fetchDataSource.value], (v) => {
     const [pS, fS] = v;
     if (pS.length) {
-      // @ts-expect-error
       innerDataSource.value = pS;
     } else if (fS.length) {
-      // @ts-expect-error
       innerDataSource.value = fS;
     }
   });
   watchEffect(() => {
-    console.log('transfer innerDataSource', innerDataSource.value);
     if (innerDataSource.value.length) {
       nextTick(initSearch);
     }
@@ -118,6 +126,9 @@
   let leftSortInstance, rightSortInstance;
   function initSearch() {
     if (!transfer.value) return;
+    const handleOps = {
+      handle: props.sortable.type === 'drag' ? '.handle' : void 0,
+    };
     const [left, right] = Array.from(
       (transfer.value.$el as HTMLElement).querySelectorAll('.ant-transfer-list-content'),
     );
@@ -134,7 +145,7 @@
         handle.classList.add('handle--visible');
       });
       leftSortInstance = Sortable.create(left, {
-        handle: '.handle',
+        ...handleOps,
       });
     }
     if (props.sortable.right && right) {
@@ -150,7 +161,7 @@
         handle.classList.add('handle--visible');
       });
       rightSortInstance = Sortable.create(right, {
-        handle: '.handle',
+        ...handleOps,
         onEnd(evt) {
           const sortedKeys = Array.from<HTMLElement>(evt.to.children).map(
             (el) => (el.children[1].children[0] as HTMLElement).dataset.key,
@@ -159,6 +170,29 @@
         },
       });
     }
+  }
+  const handleMove = (type: 'up' | 'down', ev: Event) => {
+    const moveTarget = findParent(ev.target, (el) => {
+      return el?.classList?.contains('ant-transfer-list-content-item');
+    });
+    if (type === 'up' && moveTarget.previousElementSibling) {
+      const pre = moveTarget.previousElementSibling;
+      pre.before(moveTarget);
+    } else {
+      const next = moveTarget.nextElementSibling;
+      next.after(moveTarget);
+    }
+    const sortedKeys = Array.from<HTMLElement>(moveTarget.parentElement.children).map(
+      (el) => (el.children[1].children[0] as HTMLElement).dataset.key,
+    );
+    updateValueHandler(sortedKeys);
+  };
+  function findParent(node: Element, callback: (el: Element) => boolean) {
+    let result: Element = node;
+    do {
+      if (callback(result)) break;
+    } while ((result = result.parentElement));
+    return result === node ? null : result;
   }
 
   const hanldeChange = () => {

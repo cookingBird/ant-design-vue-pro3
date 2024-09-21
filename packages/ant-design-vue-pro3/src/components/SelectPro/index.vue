@@ -63,7 +63,6 @@
       'afterChange',
     ),
   );
-  console.log('select omitProps', omitProps.value);
   // fetch data
   const fetchOps = ref<SelectOption[]>([]);
   const builtOptions = computed(

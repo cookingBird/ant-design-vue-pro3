@@ -11,8 +11,6 @@
 
 .transfer-pro .ant-transfer-list .ant-transfer-list-content-item-text {
   &__item {
-    // display: flex;
-    // justify-content: space-between;
     position: relative;
     width: 100%;
     .content {
@@ -20,6 +18,7 @@
         margin-right: 30px;
         overflow: hidden;
         width: calc(100% - 30px);
+        padding-block: 2px;
       }
     }
     .handle {
@@ -32,6 +31,17 @@
       z-index: 10;
       &--visible {
         display: block;
+      }
+      > .icon {
+        font-size: medium;
+        cursor: pointer;
+        background-color: #eee;
+        padding: 1px;
+        border-radius: 2px;
+        border: 1px solid #ddd;
+      }
+      > .icon + .icon {
+        margin-left: 8px;
       }
     }
   }

@@ -1,5 +1,5 @@
 <template>
-  <LocaleProvider :locale="props.locale">
+  <ConfigProvider :locale="props.locale">
     <AntModal
       v-bind="omitProps"
       v-model:visible="visible"
@@ -20,13 +20,13 @@
         <slot name="footer"> </slot>
       </template>
     </AntModal>
-  </LocaleProvider>
+  </ConfigProvider>
 </template>
 
 <script lang="ts" setup>
   import { ref, computed, useAttrs, type PropType } from 'vue';
   import zhCN from 'ant-design-vue/es/locale/zh_CN';
-  import { Modal as AntModal, LocaleProvider } from 'ant-design-vue';
+  import { Modal as AntModal, ConfigProvider } from 'ant-design-vue';
   import { type Locale } from 'ant-design-vue/es/locale-provider';
   import { modalProps } from 'ant-design-vue/es/modal/Modal.js';
   import { omit } from '../../tools/tool';
