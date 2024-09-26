@@ -17,7 +17,7 @@
 <script setup lang="ts">
   import { ref, computed, watch, type PropType } from 'vue';
   import { Tabs, TabPane, type TabPaneProps } from 'ant-design-vue';
-  import useQueryStorage from '../../hooks/routerPersistence';
+  import { useScopedSessionStorage } from '@easy/common-hooks';
   import { omit } from '../../tools/tool';
   import { tabsProps } from 'ant-design-vue/es/tabs/src/Tabs';
   import { merge } from 'lodash';
@@ -33,19 +33,20 @@
   const omitProps = computed(() =>
     omit(merge(defaultProps, props), 'panes', 'onUpdate:activeKey'),
   );
-  console.log('tabs omitProps', omitProps);
+
   const emit = defineEmits<{
     'update:activeKey': [val: string | number];
   }>();
-  const { value: activeTabKeyValue } = useQueryStorage(
-    'activeTabKey',
-    () => props.activeKey ?? props.panes![0]?.key,
-  );
+  const activeTabKeyValue =
+    props.useRoute ?
+      useScopedSessionStorage(
+        'activeTabKey',
+        () => props.activeKey ?? props.panes![0]?.key,
+      ).value
+    : ref('');
   function onUpdateActiveKey(val: string | number) {
     emit('update:activeKey', val);
-    if (props.useRoute) {
-      activeTabKeyValue.value = val;
-    }
+    activeTabKeyValue.value = val;
   }
 
   const omitComponent = (ops: { component: any }) => omit(ops, 'component');
@@ -53,25 +54,26 @@
   const internalActiveKey = useInternalActiveKey();
   function useInternalActiveKey() {
     const internalActiveKey = ref<string | undefined>(undefined);
-    if (props.useRoute) {
-      watch(
-        () => activeTabKeyValue.value,
-        (val) => {
+    watch(
+      () => activeTabKeyValue.value,
+      (val) => {
+        if (val) {
           internalActiveKey.value = val?.toString();
-        },
-        { immediate: true },
-      );
-    } else {
-      watch(
-        () => props.activeKey,
-        (val) => {
-          if (val) {
-            internalActiveKey.value = val.toString();
-          }
-        },
-        { immediate: true },
-      );
-    }
+        }
+      },
+      { immediate: true },
+    );
+
+    watch(
+      () => props.activeKey,
+      (val) => {
+        if (val) {
+          internalActiveKey.value = val.toString();
+        }
+      },
+      { immediate: true },
+    );
+
     return internalActiveKey;
   }
 </script>

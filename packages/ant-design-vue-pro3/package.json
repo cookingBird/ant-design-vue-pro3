@@ -19,6 +19,7 @@
     "tailwindcss": "3.4.7"
   },
   "dependencies": {
+    "@easy/common-hooks": "workspace:*",
     "@vueuse/core": "^10.11.0",
     "draggable-resizable-vue3": "1.0.94-beta",
     "lodash": "4.17.21",

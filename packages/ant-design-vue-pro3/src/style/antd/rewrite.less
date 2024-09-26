@@ -9,6 +9,13 @@
 @table-row-hover-bg: var(--table-row-hover-bg, @background-color-light);
 @table-header-color: var(--table-header-color, @heading-color);
 @table-expanded-row-bg: var(--table-expand-row-bg, @table-bg, #fbfbfb);
+@table-body-sort-bg: var(--table-body-sort-bg, --table-sort-bg, transparent);
+@table-header-sort-bg: var(
+  --table-header-sort-bg,
+  --table-body-sort-bg,
+  --table-sort-bg,
+  transparent
+);
 // todo
 @table-border-color--base: var(--table-border-color, #f0f0f0);
 @table-border: var(--table-border-width, @border-width-base)
