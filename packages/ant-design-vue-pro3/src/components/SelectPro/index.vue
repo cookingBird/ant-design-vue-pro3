@@ -22,7 +22,7 @@
   const props = defineProps({
     ...selectProps(),
     // effected remote data
-    effectKeys: String,
+    effectKeys: [String, Array],
     fetch: Function as PropType<
       (
         model: any,
@@ -91,7 +91,7 @@
     'update:value': [val: any];
   }>();
   const updateValueHandler = (val: any) => {
-    const _n = props.afterChange!(val);
+    const _n = props.afterChange!(val, builtOptions.value);
     emit('update:value', _n);
     props.model && valueSetter(props.model, _n);
   };

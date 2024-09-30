@@ -208,7 +208,7 @@
     'update:targetKeys': [val: any];
   }>();
   const updateValueHandler = (val: any) => {
-    const _n = props.afterChange!(val);
+    const _n = props.afterChange!(val, innerDataSource.value);
     emit('update:targetKeys', _n);
     props.model && valueSetter(props.model, _n);
   };

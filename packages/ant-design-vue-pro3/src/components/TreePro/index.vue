@@ -14,10 +14,9 @@
     <AntTree
       ref="treeRef"
       v-bind="treePropsOmitted"
-      :expandedKeys="wrapperInnerExpandedKeys"
+      v-model:expandedKeys="innerExpandedKeys"
       :treeData="innerData"
       :onDrop="onDrop"
-      @update:expandedKeys="handleUpdateExpandedKeys"
     >
       <template v-if="$slots.switcherIcon" #switcherIcon="slotProps">
         <slot name="switcherIcon" v-bind="slotProps"> </slot>
@@ -44,6 +43,7 @@
     TreeDataItem,
   } from 'ant-design-vue/lib/tree';
   import { useSessionStorage } from '@vueuse/core';
+  import { useInnerProps } from '@easy/common-hooks';
 
   defineOptions({
     name: 'TreePro',
@@ -74,53 +74,40 @@
       default: true,
     },
   });
-  const d = {
-    size: 'small',
-    showSearcher: false,
-    selectable: false,
-    draggable: false,
-  };
+
   const emit = defineEmits<{
     'update:searchValue': [val: string];
     'click': [ev: MouseEvent, data: any];
     'rightClick': [ev: MouseEvent, data: any];
     'drop': [info: AntTreeNodeDropEvent, changeList: unknown[]];
   }>();
+
   const treePropsOmitted = computed(() =>
-    omit({ ...attrs, ...d, ...props }, 'searchValue', 'searchOptions', 'size', 'onDrop'),
+    omit({ ...attrs, ...props }, 'searchValue', 'searchOptions', 'size', 'onDrop'),
   );
+
   const inputProps = computed(() => pick(props, 'searchOptions', 'searchValue'));
+
   const modelValueHandler = (val: string) => {
     emit('update:searchValue', val);
   };
 
   const innerData = ref([] as any);
 
-  // >>>>>>>>>>>>>> expand persistence
+  // ========================== expand persistence ====================
   const innerExpandedKeys = useSessionStorage(
     'treeExpandedKeys-' + props.name,
     [] as (string | number)[],
   );
-  const wrapperInnerExpandedKeys = computed(() =>
-    innerExpandedKeys.value.length > 0 ? innerExpandedKeys.value : undefined,
-  );
-  const handleUpdateExpandedKeys = (keys: (string | number)[]) => {
-    if (innerExpandedKeys.value.length) {
-      innerExpandedKeys.value = keys;
-    }
-  };
-  watchEffect(() => {
-    if (props.expandedKeys) {
-      innerExpandedKeys.value = [...props.expandedKeys];
-    }
-  });
+
   onBeforeUnmount(() => {
     if (!props.name) {
-      sessionStorage.setItem('treeExpandedKeys-' + props.name, JSON.stringify([]));
+      innerExpandedKeys.value = [];
     }
   });
-  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-  // >>>>>>>>>>>>>>>>>>>>>>>>>>>>dragable
+  // =========================== End ===================================
+
+  // =========================== dragable ==============================
   const travel = getTreeTravel({
     every(node, parent, index) {
       if (!parent) {
@@ -210,7 +197,7 @@
     }
     innerData.value = data;
   }
-  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  // ===================================================================
   defineExpose({
     treeRef,
   });

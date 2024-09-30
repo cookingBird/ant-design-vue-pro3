@@ -11,6 +11,7 @@ import ModalPro from './components/ModalPro/index.vue';
 import TreePro from './components/TreePro/index.vue';
 import PopoverPro from './components/PopoverPro/index.vue';
 import { InputSearch } from 'ant-design-vue';
+import FullHeightWrapper from './components/FullHeightWrapper/index.vue';
 export {
   ButtonPro,
   PDFPreviewer,
@@ -24,5 +25,6 @@ export {
   ModalPro,
   TreePro,
   PopoverPro,
-  InputSearch
+  InputSearch,
+  FullHeightWrapper
 };

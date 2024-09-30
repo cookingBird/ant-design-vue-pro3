@@ -24,7 +24,7 @@
   const props = defineProps({
     ...tabsProps(),
     height: { type: String, default: 'full' },
-    useRoute: { type: Boolean, default: true },
+    persistenceActive: { type: Boolean, default: true },
     panes: Array as PropType<TabPaneProps & { key: string; component: any }[]>,
   });
   const defaultProps = {
@@ -38,7 +38,7 @@
     'update:activeKey': [val: string | number];
   }>();
   const activeTabKeyValue =
-    props.useRoute ?
+    props.persistenceActive ?
       useScopedSessionStorage(
         'activeTabKey',
         () => props.activeKey ?? props.panes![0]?.key,
