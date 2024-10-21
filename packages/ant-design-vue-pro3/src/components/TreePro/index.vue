@@ -122,13 +122,13 @@
   watch(
     () => props.treeData,
     (val) => {
-      if (val?.length) {
+      if (val) {
+        innerData.value = val;
         if (props.draggable && !props.treeData![0]!.key) {
-          innerData.value = val;
           travel(innerData.value);
-        } else {
-          innerData.value = val;
         }
+      } else {
+        innerData.value = [];
       }
     },
     { immediate: true },
