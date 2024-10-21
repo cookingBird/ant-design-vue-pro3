@@ -17,4 +17,11 @@
       margin-left: var(--gutter);
     }
   }
+  @include style-selector('vertical') {
+    display: flex;
+    flex-direction: column;
+    > * + * {
+      margin-left: var(--gutter);
+    }
+  }
 }

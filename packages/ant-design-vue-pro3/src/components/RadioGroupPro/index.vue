@@ -1,14 +1,14 @@
 <template>
-  <radio-group
-    v-bind="omitProps"
-    :value="value"
-    @update:value="updateValueHandler"
-  ></radio-group>
+  <RadioGroup v-bind="omitProps" :value="value" @update:value="updateValueHandler">
+    <template v-for="item in props.options || []">
+      <Radio v-bind="item" :value="item.alue"> {{ item.label }}</Radio>
+    </template>
+  </RadioGroup>
 </template>
 
 <script lang="ts" setup>
   import { computed } from 'vue';
-  import { RadioGroup } from 'ant-design-vue';
+  import { RadioGroup, Radio } from 'ant-design-vue';
   import { radioGroupProps } from 'ant-design-vue/es/radio/Group';
   import { omit } from '../../tools/tool';
   import { useValue } from '../../hooks/value';

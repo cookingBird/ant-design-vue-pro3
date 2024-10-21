@@ -10,8 +10,10 @@ import ButtonGroupPro from './components/ButtonGroupPro/index.vue';
 import ModalPro from './components/ModalPro/index.vue';
 import TreePro from './components/TreePro/index.vue';
 import PopoverPro from './components/PopoverPro/index.vue';
+import SwitchPro from './components/SwitchPro/index.vue';
 import { InputSearch } from 'ant-design-vue';
 import FullHeightWrapper from './components/FullHeightWrapper/index.vue';
+import SpinPro from './components/SpinPro/index.vue';
 export {
   ButtonPro,
   PDFPreviewer,
@@ -26,5 +28,7 @@ export {
   TreePro,
   PopoverPro,
   InputSearch,
-  FullHeightWrapper
+  FullHeightWrapper,
+  SwitchPro,
+  SpinPro
 };

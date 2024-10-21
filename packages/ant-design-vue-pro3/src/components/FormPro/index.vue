@@ -14,7 +14,7 @@
           v-show="callValue(item.show, (val) => val(model))"
           v-bind="item.col"
         >
-          <form-item-pro v-bind="item.formItemProps">
+          <FormItemPro v-bind="item.formItemProps">
             <slot :name="_buildName(item)" :option="item" :model="model">
               <TypeNode :options="_buildSlotProps(item)" :model="model"> </TypeNode>
               <row-pro
@@ -28,7 +28,7 @@
                     v-show="callValue(_item.show, (val) => val(model))"
                     v-bind="_item.col"
                   >
-                    <form-item-pro
+                    <FormItemPro
                       :labelCol="item.children.labelCol ?? labelCol"
                       :labelAlign="item.children.labelAlign ?? labelAlign"
                       :colon="item.children.colon ?? colon"
@@ -36,21 +36,21 @@
                     >
                       <TypeNode :options="_buildSlotProps(_item)" :model="model">
                       </TypeNode>
-                    </form-item-pro>
+                    </FormItemPro>
                   </col-pro>
                 </template>
               </row-pro>
             </slot>
-          </form-item-pro>
+          </FormItemPro>
         </col-pro>
       </template>
     </row-pro>
     <template v-for="item in options.columns" v-else>
-      <form-item-pro v-bind="item.formItemProps">
+      <FormItemPro v-bind="item.formItemProps">
         <slot :name="_buildName(item)" :option="item" :model="model">
           <TypeNode :options="_buildSlotProps(item)" :model="model"> </TypeNode>
         </slot>
-      </form-item-pro>
+      </FormItemPro>
     </template>
     <slot></slot>
   </ant-form>

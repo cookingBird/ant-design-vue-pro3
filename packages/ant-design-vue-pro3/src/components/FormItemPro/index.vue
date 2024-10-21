@@ -1,5 +1,5 @@
 <template>
-  <AntFormItem v-bind="omit(props, 'tooltip')" class="form-item-pro">
+  <AntFormItem v-bind="omit(props, 'tooltip', 'label')" class="form-item-pro">
     <template #label>
       {{ props.label }}
       <Tooltip v-if="props.tooltip" v-bind="props.tooltip">

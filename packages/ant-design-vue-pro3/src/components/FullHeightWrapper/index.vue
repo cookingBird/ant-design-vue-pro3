@@ -1,13 +1,6 @@
 <template>
-  <div
-    ref="el"
-    class="pro-fullHeightWrapper"
-  >
-    <slot
-      :width="width"
-      :height="height"
-      :fullHeight="fullHeight"
-    ></slot>
+  <div ref="el" class="pro-fullHeightWrapper">
+    <slot :width="width" :height="height" :fullHeight="fullHeight"></slot>
   </div>
 </template>
 
@@ -20,7 +13,7 @@
   const fullHeight = computed(() => `height:${height.value}px;`);
 </script>
 
-<style scoped>
+<style>
   .pro-fullHeightWrapper {
     height: 100%;
   }

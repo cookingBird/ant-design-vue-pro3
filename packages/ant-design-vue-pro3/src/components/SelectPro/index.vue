@@ -48,7 +48,7 @@
     maxTagCount: 'responsive',
     showSearch: false,
     filterOption: (input: string, option: any) => {
-      return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+      return option.label?.toLowerCase().indexOf(input?.toLowerCase()) >= 0;
     },
   };
 
@@ -63,6 +63,7 @@
       'afterChange',
     ),
   );
+
   // fetch data
   const fetchOps = ref<SelectOption[]>([]);
   const builtOptions = computed(

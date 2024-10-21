@@ -11,6 +11,7 @@
       <!-- :scroll="scroll" -->
       <template #bodyCell="{ column, record, index }">
         <slot
+          v-if="column.dataIndex === 'index' || column.slotIs"
           :name="column.dataIndex"
           :column="column"
           :index="index"
@@ -18,7 +19,7 @@
           :row="record"
         >
           <type-node-vue
-            v-if="column.dataIndex !== undefined && column.slotIs"
+            v-if="column.slotIs"
             :model="record"
             :options="{
               slotIs: column.slotIs,
@@ -30,9 +31,6 @@
           ></type-node-vue>
           <template v-else-if="column.dataIndex === 'index'">
             {{ index + 1 }}
-          </template>
-          <template v-else>
-            {{ record[column.dataIndex] }}
           </template>
         </slot>
       </template>

@@ -1,7 +1,18 @@
 // ============================= common ============================
 @text-color: var(--text-color, rgba(0, 0, 0, 0.85));
 @component-background: var(--component-bg, #fff);
+// todo
+// @border-width-base: var(--border-width-base, 1px);
+@border-style-base: var(--border-style-base, solid);
+@primary-color: var(--primary-color, @blue-6);
 // ============================= common end ========================
+
+// ============================= common disabled ===================
+// todo
+// @disabled-color: var(--disabled-color, fade(#000, 25%));
+@disabled-bg: var(--disabled-bg, @background-color-base);
+@disabled-active-bg: var(--disabled-active-bg, tint(@black, 90%));
+// ============================= common end disabled ===============
 
 // ============================= table =============================
 @table-bg: var(--table-bg, @component-background);
@@ -16,21 +27,24 @@
   --table-sort-bg,
   transparent
 );
+@table-border-color--base: var(--table-border-color--base, #f0f0f0);
+
+@table-border: var(
+  --table-border,
+  @border-width-base @border-style-base @table-border-color
+);
 // todo
-@table-border-color--base: var(--table-border-color, #f0f0f0);
-@table-border: var(--table-border-width, @border-width-base)
-  var(--table-border-style, @border-style-base)
-  var(--table-border-color, @table-border-color);
+// @table-border-color: var(--table-border-color, @border-color-split);
 // ============================= table End =============================
 
-// ============================== input =================================
+// ============================== Input =================================
 @input-color: var(--input-color, @text-color);
 @input-icon-color: var(--input-icon-color, @text-color);
 @input-border-color: var(--input-border-color, @border-color-base);
 @input-bg: var(--input-bg, @component-background);
 @input-hover-border-color: var(--input-border-hover-color, @primary-5);
 @input-icon-hover-color: var(--input-icon-hover-color, fade(@black, 85%));
-// ============================== input end =============================
+// ============================== Input end =============================
 
 // =============================== transfer  =============================
 @transfer-list-height: var(--transfer-list-height, 200px);
@@ -40,3 +54,26 @@
 // TODO
 // @form-item-margin-bottom: var(--form-item-mb, 24px);
 // =============================== Form end ==========================
+
+// =============================== Pagination  =============================
+@pagination-item-bg: var(--pagination-item-bg, @component-background);
+@pagination-item-bg-active: var(--pagination-item-bg-active, @component-background);
+@pagination-item-link-bg: var(--pagination-item-link-bg, @component-background);
+@pagination-item-disabled-color-active: var(
+  --pagination-item-disabled-color-active,
+  @disabled-color
+);
+@pagination-item-disabled-bg-active: var(
+  --pagination-item-disabled-bg-active,
+  @disabled-active-bg
+);
+@pagination-item-input-bg: var(--pagination-item-input-bg, @component-background);
+// =============================== Pagination end ==========================
+
+// =============================== Select  =============================
+// TODO
+@select-background: var(--select-background, @component-background);
+@select-dropdown-bg: var(--select-dropdown-bg, @component-background);
+@select-item-selected-color: var(--select-item-selected-color, @text-color);
+@select-multiple-item-disabled-color: var(--select-multiple-item-disabled-color, #bfbfbf);
+// =============================== Select end ==========================
