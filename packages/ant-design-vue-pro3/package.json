@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@easy/common-hooks": "workspace:*",
-    "@vueuse/core": "^10.11.0",
+    "@vueuse/core": "^11.1.0",
     "draggable-resizable-vue3": "1.0.94-beta",
     "lodash": "4.17.21",
     "sortablejs": "1.15.2"

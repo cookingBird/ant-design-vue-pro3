@@ -1,40 +1,53 @@
 <template>
-  <div class="table-pro-wrapper" :data-style="styled">
-    <ant-table
-      ref="tableRef"
-      v-bind="mergedProps"
-      :class="autoFitHeight ? 'table-pro--autoHeight' : ''"
-      :columns="props.columns"
-      :dataSource="props.dataSource"
-      :scroll="scroll"
-    >
-      <!-- :scroll="scroll" -->
-      <template #bodyCell="{ column, record, index }">
-        <slot
-          v-if="column.dataIndex === 'index' || column.slotIs"
-          :name="column.dataIndex"
-          :column="column"
-          :index="index"
-          :record="record"
-          :row="record"
+  <div
+    ref="tableWrapperRef"
+    class="table-pro-wrapper"
+    :class="{
+      'table-pro--autoHeight': autoFitHeight,
+      'table-pro--nooverflow': !isOverflow,
+    }"
+    :data-style="styled"
+  >
+    <FullHeightWrapper>
+      <template #default="{ height }">
+        <ant-table
+          ref="tableRef"
+          v-bind="mergedProps"
+          :columns="props.columns"
+          :dataSource="props.dataSource"
+          :scroll="{
+            y: Math.floor(height - headerHeight - 1),
+          }"
         >
-          <type-node-vue
-            v-if="column.slotIs"
-            :model="record"
-            :options="{
-              slotIs: column.slotIs,
-              slotProps: column.slotProps,
-              prop: column.prop,
-              name: column.dataIndex,
-              wrapperProps: column.wrapperProps,
-            }"
-          ></type-node-vue>
-          <template v-else-if="column.dataIndex === 'index'">
-            {{ index + 1 }}
+          <!-- :scroll="scroll" -->
+          <template #bodyCell="{ column, record, index }">
+            <slot
+              v-if="column.dataIndex === 'index' || column.slotIs"
+              :name="column.dataIndex"
+              :column="column"
+              :index="index"
+              :record="record"
+              :row="record"
+            >
+              <type-node-vue
+                v-if="column.slotIs"
+                :model="record"
+                :options="{
+                  slotIs: column.slotIs,
+                  slotProps: column.slotProps,
+                  prop: column.prop,
+                  name: column.dataIndex,
+                  wrapperProps: column.wrapperProps,
+                }"
+              ></type-node-vue>
+              <template v-else-if="column.dataIndex === 'index'">
+                {{ index + 1 }}
+              </template>
+            </slot>
           </template>
-        </slot>
+        </ant-table>
       </template>
-    </ant-table>
+    </FullHeightWrapper>
   </div>
 </template>
 
@@ -44,7 +57,8 @@
   import TypeNodeVue from '../TypeNode/index.vue';
   import { tableProps } from 'ant-design-vue/es/table/index.js';
   import { merge } from 'lodash';
-  import { useScrollY } from './hook';
+  import { useTableHeaderHeight, useTableContentHeight } from './hook';
+  import FullHeightWrapper from '../FullHeightWrapper/index.vue';
   defineOptions({
     name: 'TablePro',
     inheritAttrs: true,
@@ -66,14 +80,28 @@
     },
   });
 
-  const defaultProps = {};
+  const defaultProps = {
+    pagination: false,
+  };
 
   const mergedProps = computed(() => merge(defaultProps, props));
 
+  const tableWrapperRef = ref<HTMLDivElement | null>();
   const tableRef = ref<typeof AntTable | null>();
-  // @ts-expect-error
-  const scroll = props.autoFitHeight ? useScrollY(tableRef) : ref({});
-
+  const headerHeight = useTableHeaderHeight(tableRef);
+  const contentHeight = useTableContentHeight(tableRef);
+  const isOverflow = ref(false);
+  watchEffect(() => {
+    isOverflow.value =
+      headerHeight.value + contentHeight.value > tableWrapperRef.value?.offsetHeight;
+    console.log('isOverflow.value', isOverflow.value);
+  });
+  watchEffect(() => {
+    console.warn('headerHeight', headerHeight.value);
+  });
+  watchEffect(() => {
+    console.warn('contentHeight', contentHeight.value);
+  });
   defineExpose({
     tableRef,
   });

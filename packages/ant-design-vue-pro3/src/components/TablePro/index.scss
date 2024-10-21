@@ -2,18 +2,13 @@
 @import '../../style/tool.scss';
 
 .table-pro-wrapper {
-  &:has(.table-pro--autoHeight) {
-    height: 100%;
-  }
-  .ant-table-wrapper.table-pro--autoHeight,
-  .ant-spin-nested-loading,
-  .ant-spin-container,
-  .ant-table,
-  .ant-table-container {
+  &.table-pro--autoHeight {
     height: 100%;
     overflow: hidden;
   }
-
+  &.table-pro--nooverflow .ant-table-body::-webkit-scrollbar {
+    display: none;
+  }
   // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   @include style-selector('transparent') {
     --table-bg: transparent;
