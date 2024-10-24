@@ -112,7 +112,7 @@
     every(node, parent, index) {
       if (!parent) {
         // @ts-expect-error
-        node.key = index + '';
+        node.key = '' + index;
       } else {
         // @ts-expect-error
         node.key = parent.key + '-' + index;
@@ -134,56 +134,67 @@
     { immediate: true },
   );
   function onDrop(info: AntTreeNodeDropEvent) {
+    console.log('drop info', info);
+    console.log('dropToGap', info.dropToGap);
     const dropKey = info.node.key;
     const dragKey = info.dragNode.key;
-
     const dropPos = info.node.pos.split('-');
     const dropPosition = info.dropPosition - Number(dropPos[dropPos.length - 1]);
-
-    const data: TreeProps['treeData'] = [...innerData.value];
+    const loop = (data: TreeProps['treeData'], key: string | number, callback: any) => {
+      data.forEach((item, index) => {
+        if (item.key === key) {
+          return callback(item, index, data, null);
+        }
+        if (item.children) {
+          return loop(item.children, key, callback, item);
+        }
+      });
+    };
+    const data = [...innerData.value];
 
     // Find dragObject
     let dragObj: TreeDataItem;
-    findSelfList(
+    loop(
       data,
       dragKey,
       (item: TreeDataItem, index: number, arr: TreeProps['treeData']) => {
-        arr?.splice(index, 1);
+        arr.splice(index, 1);
         dragObj = item;
       },
     );
+    let sortedArr = [];
+    let sortParentNode = null;
     if (!info.dropToGap) {
       // Drop on the content
-      findSelfList(data, dropKey, (item: TreeDataItem) => {
+      loop(data, dropKey, (item: TreeDataItem, index, arr, parent) => {
         item.children = item.children || [];
         /// where to insert 示例添加到头部，可以是随意位置
         item.children.unshift(dragObj);
-        setTimeout(() => {
-          emit('drop', info, [...item.children]);
-        });
+        sortedArr = item.children;
+        sortParentNode = parent;
       });
     } else if (
       (info.node.children || []).length > 0 && // Has children
       info.node.expanded && // Is expanded
       dropPosition === 1 // On the bottom gap
     ) {
-      findSelfList(data, dropKey, (item: TreeDataItem) => {
+      loop(data, dropKey, (item: TreeDataItem, index, arr, parent) => {
         item.children = item.children || [];
         // where to insert 示例添加到头部，可以是随意位置
         item.children.unshift(dragObj);
-        setTimeout(() => {
-          emit('drop', info, [...item.children]);
-        });
+        sortedArr = item.children;
+        sortParentNode = parent;
       });
     } else {
       let ar: TreeProps['treeData'] = [];
       let i = 0;
-      findSelfList(
+      loop(
         data,
         dropKey,
-        (_item: TreeDataItem, index: number, arr: TreeProps['treeData']) => {
+        (_item: TreeDataItem, index: number, arr: TreeProps['treeData'], parent) => {
           ar = arr;
           i = index;
+          sortParentNode = parent;
         },
       );
       if (dropPosition === -1) {
@@ -191,9 +202,8 @@
       } else {
         ar.splice(i + 1, 0, dragObj);
       }
-      setTimeout(() => {
-        emit('drop', info, [...ar]);
-      });
+      sortedArr = ar;
+      emit('drop', info, sortedArr, parent);
     }
     innerData.value = data;
   }
