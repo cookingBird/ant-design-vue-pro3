@@ -124,7 +124,7 @@
     (val) => {
       if (val) {
         innerData.value = val;
-        if (props.draggable && !props.treeData![0]!.key) {
+        if (props.draggable && !props.treeData?.[0]?.key) {
           travel(innerData.value);
         }
       } else {
@@ -134,8 +134,6 @@
     { immediate: true },
   );
   function onDrop(info: AntTreeNodeDropEvent) {
-    console.log('drop info', info);
-    console.log('dropToGap', info.dropToGap);
     const dropKey = info.node.key;
     const dragKey = info.dragNode.key;
     const dropPos = info.node.pos.split('-');
