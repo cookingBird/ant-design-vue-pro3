@@ -158,13 +158,15 @@
     let sortedArr = [];
     let beforeParent = null;
     let afterParent = null;
+    let deletePreNode = () => {};
+    let doneSort = () => {};
     // Find dragObject
     let dragObj: TreeDataItem;
     loop(
       data,
       dragKey,
       (item: TreeDataItem, index: number, arr: TreeProps['treeData'], parent) => {
-        arr.splice(index, 1);
+        deletePreNode = () => arr.splice(index, 1);
         dragObj = item;
         beforeParent = parent;
       },
@@ -173,9 +175,12 @@
     if (!info.dropToGap) {
       // Drop on the content
       loop(data, dropKey, (item: TreeDataItem, index, arr) => {
-        item.children = item.children || [];
-        /// where to insert 示例添加到头部，可以是随意位置
-        item.children.unshift(dragObj);
+        doneSort = () => {
+          deletePreNode();
+          item.children = item.children || [];
+          /// where to insert 示例添加到头部，可以是随意位置
+          item.children.unshift(dragObj);
+        };
         sortedArr = item.children;
         afterParent = item;
       });
@@ -185,9 +190,12 @@
       dropPosition === 1 // On the bottom gap
     ) {
       loop(data, dropKey, (item: TreeDataItem, index, arr, parent) => {
-        item.children = item.children || [];
-        // where to insert 示例添加到头部，可以是随意位置
-        item.children.unshift(dragObj);
+        doneSort = () => {
+          deletePreNode();
+          item.children = item.children || [];
+          // where to insert 示例添加到头部，可以是随意位置
+          item.children.unshift(dragObj);
+        };
         sortedArr = item.children;
         afterParent = item;
       });
@@ -201,16 +209,19 @@
           ar = arr;
           i = index;
           afterParent = parent;
+          sortedArr = ar;
         },
       );
-      if (dropPosition === -1) {
-        ar.splice(i, 0, dragObj);
-      } else {
-        ar.splice(i + 1, 0, dragObj);
-      }
-      sortedArr = ar;
+      doneSort = () => {
+        deletePreNode();
+        if (dropPosition === -1) {
+          ar.splice(i, 0, dragObj);
+        } else {
+          ar.splice(i + 1, 0, dragObj);
+        }
+      };
     }
-    emit('drop', info, sortedArr, afterParent, beforeParent);
+    emit('drop', info, sortedArr, afterParent, beforeParent, dragObj, doneSort);
     innerData.value = data;
   }
   // ===================================================================
