@@ -138,38 +138,46 @@
     const dragKey = info.dragNode.key;
     const dropPos = info.node.pos.split('-');
     const dropPosition = info.dropPosition - Number(dropPos[dropPos.length - 1]);
-    const loop = (data: TreeProps['treeData'], key: string | number, callback: any) => {
+    const loop = (
+      data: TreeProps['treeData'],
+      key: string | number,
+      callback: any,
+      parent,
+    ) => {
       data.forEach((item, index) => {
         if (item.key === key) {
-          return callback(item, index, data, null);
+          callback(item, index, data, parent);
+          return;
         }
         if (item.children) {
-          return loop(item.children, key, callback, item);
+          loop(item.children, key, callback, item);
         }
       });
     };
     const data = [...innerData.value];
-
+    let sortedArr = [];
+    let beforeParent = null;
+    let afterParent = null;
     // Find dragObject
     let dragObj: TreeDataItem;
     loop(
       data,
       dragKey,
-      (item: TreeDataItem, index: number, arr: TreeProps['treeData']) => {
+      (item: TreeDataItem, index: number, arr: TreeProps['treeData'], parent) => {
         arr.splice(index, 1);
         dragObj = item;
+        beforeParent = parent;
       },
     );
-    let sortedArr = [];
-    let sortParentNode = null;
+
     if (!info.dropToGap) {
       // Drop on the content
-      loop(data, dropKey, (item: TreeDataItem, index, arr, parent) => {
+      loop(data, dropKey, (item: TreeDataItem, index, arr) => {
         item.children = item.children || [];
         /// where to insert 示例添加到头部，可以是随意位置
         item.children.unshift(dragObj);
         sortedArr = item.children;
-        sortParentNode = parent;
+        afterParent = item;
       });
     } else if (
       (info.node.children || []).length > 0 && // Has children
@@ -181,7 +189,7 @@
         // where to insert 示例添加到头部，可以是随意位置
         item.children.unshift(dragObj);
         sortedArr = item.children;
-        sortParentNode = parent;
+        afterParent = item;
       });
     } else {
       let ar: TreeProps['treeData'] = [];
@@ -192,7 +200,7 @@
         (_item: TreeDataItem, index: number, arr: TreeProps['treeData'], parent) => {
           ar = arr;
           i = index;
-          sortParentNode = parent;
+          afterParent = parent;
         },
       );
       if (dropPosition === -1) {
@@ -201,8 +209,8 @@
         ar.splice(i + 1, 0, dragObj);
       }
       sortedArr = ar;
-      emit('drop', info, sortedArr, parent);
     }
+    emit('drop', info, sortedArr, afterParent, beforeParent);
     innerData.value = data;
   }
   // ===================================================================
